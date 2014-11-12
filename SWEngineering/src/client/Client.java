@@ -3,6 +3,8 @@ package client;
 import java.io.IOException;
 import java.net.Socket;
 
+import client.gui.LobbyPanel;
+import client.gui.MainFrame;
 import common.Sender;
 import common.Util;
 
@@ -27,6 +29,7 @@ public class Client
              * gui 에 sender 를 넘겨주고, getSender() 로 얻음
              * sender.send( Protocol )을 통해 프로토콜 전송
              */
+            
             receiver.start();
             receiver.join();
         } 

@@ -84,6 +84,12 @@ class ServerReceiver extends Thread
     
     private void handleProtocol( ChatProtocol data ) {
         //System.out.println( "get Chat Protocol" );
+        switch( data.getProtocol() ) {
+        
+        case ChatProtocol.QUIT:
+            Util.println( "ServerReceiver\tconnection closed\t\t\t"+getInfo() );
+            close();
+        }
     }
     
     private void handleProtocol( LobbyProtocol data ) {
