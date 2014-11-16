@@ -31,17 +31,51 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
-import java.awt.Font;
 
-public class LobbyPanel extends JPanel
+import protocol.ChatProtocol;
+import common.Sender;
+
+import java.awt.Font;
+import java.util.Iterator;
+import java.util.Vector;
+
+public class LobbyPanel extends JPanel implements PanelInterface
 {
+    private static final long serialVersionUID = 1L;
     private JTextField msg_textField;
+    private JTextArea msg_textArea;
     private JTextField whisper_textField;
+    private DefaultListModel<String> userList;
+    
+    private Sender sender = null;
+    
+    @Override
+    public void removeUser(String id) {
+        userList.removeElement( id );
+    }
+    
+    @Override
+    public void addUser( String id ) {
+        userList.addElement( id );
+    }
+    
+    @Override
+    public void printMessage( String msg ) {
+        msg_textArea.append( msg );
+    }
+
+    @Override
+    public void addUserList( Vector<String> list ) {
+        for( String id : list ) {
+            addUser( id );
+        }
+    }
     
     /**
      * Create the panel.
      */
-    public LobbyPanel() {
+    public LobbyPanel( final Sender sender ) {
+        //this.sender = sender;
         setLayout(null);
         
         JPanel chat_panel = new JPanel();
@@ -52,20 +86,29 @@ public class LobbyPanel extends JPanel
         
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setBounds(12, 10, 713, 139);
+        scrollPane.setBounds(12, 10, 713, 149);
         chat_panel.add(scrollPane);
         
-        JTextPane chat_textPane = new JTextPane();
-        chat_textPane.setEditable(false);
-        scrollPane.setViewportView(chat_textPane);
+        msg_textArea = new JTextArea();
+        msg_textArea.setEditable(false);
+        msg_textArea.setLineWrap( true );
+        scrollPane.setViewportView(msg_textArea);
         
         msg_textField = new JTextField();
-        msg_textField.setBounds(163, 159, 562, 21);
+        msg_textField.setBounds(164, 169, 562, 21);
         chat_panel.add(msg_textField);
         msg_textField.setColumns(10);
+        msg_textField.addActionListener( new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sender.send( new ChatProtocol( ChatProtocol.MESSAGE, msg_textField.getText() ) );
+                msg_textField.setText( "" );
+            }
+        });
         
         whisper_textField = new JTextField();
-        whisper_textField.setBounds(12, 159, 140, 21);
+        whisper_textField.setBounds(12, 169, 140, 21);
         chat_panel.add(whisper_textField);
         whisper_textField.setColumns(10);
         
@@ -140,7 +183,7 @@ public class LobbyPanel extends JPanel
         scrollPane_1.setBounds(779, 10, 209, 470);
         add(scrollPane_1);
         
-        DefaultListModel<String> userList = new DefaultListModel<String>();
+        userList = new DefaultListModel<String>();
         JList<String> userList_list = new JList<String>(userList);
         scrollPane_1.setViewportView(userList_list);
         userList_list.setCellRenderer(new DefaultListCellRenderer(){
@@ -149,7 +192,7 @@ public class LobbyPanel extends JPanel
                         return CENTER;
                }
         });
-        userList.addElement( "asd" );
-        
     }
+
+
 }

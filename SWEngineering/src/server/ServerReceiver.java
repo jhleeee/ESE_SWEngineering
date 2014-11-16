@@ -27,12 +27,11 @@ class ServerReceiver extends Thread
     
     private int userLocation = 0;
     
-    ServerReceiver( Socket socket, Lobby lobby, String id ) throws IOException{
+    ServerReceiver( Socket socket, Lobby lobby ) throws IOException{
         sender = new Sender( socket );
         in = new ObjectInputStream( socket.getInputStream() );
         this.lobby = lobby;
         this.socket = socket;
-        this.id = id;
         
         userLocation = ServerInterface.LOBBY; // 초기 위치는 로비
         server = lobby;                       // 속한 위치가 로비
@@ -47,6 +46,7 @@ class ServerReceiver extends Thread
         return sender;
     }
     private void close() {
+        Util.println( "ServerReceiver\tconnection closed\t\t\t"+getInfo() );
         this.interrupt();
     }
     String getID() {
@@ -56,6 +56,18 @@ class ServerReceiver extends Thread
     public void run() {
         Protocol p = null;
         try {
+            // 테스트
+            //
+            //
+            p = ( Protocol )in.readObject();
+            id = ((ChatProtocol)p).getData();
+            in.readObject();
+            lobby.addUser( this );
+            server.broadcast( new LobbyProtocol( LobbyProtocol.ENTER_LOBBY, id ) );
+            sender.send( new LobbyProtocol( LobbyProtocol.USER_LIST, lobby.getUserList() ));
+            
+            //
+            //
             while( !Thread.currentThread().isInterrupted() ) {
                 p = ( Protocol )in.readObject();
                 if( p instanceof ChatProtocol ) 
@@ -72,7 +84,11 @@ class ServerReceiver extends Thread
             }
         }
         catch( SocketException e ) {
-            Util.println( "ServerReceiver\tconnection closed\t\t\t"+getInfo() );
+            // 강제종료 처리
+            //
+            //
+            //
+            
             close();
         }
         catch( IOException | ClassNotFoundException e ) {
@@ -86,16 +102,31 @@ class ServerReceiver extends Thread
         //System.out.println( "get Chat Protocol" );
         switch( data.getProtocol() ) {
         
+        case ChatProtocol.MESSAGE:
+            data.setData( id + " : " + data.getData() + "\n" );
+            server.broadcast( data );
+
+            break;
+            
         case ChatProtocol.QUIT:
-            Util.println( "ServerReceiver\tconnection closed\t\t\t"+getInfo() );
+            // 똑같음
             close();
+            break;
         }
     }
     
     private void handleProtocol( LobbyProtocol data ) {
         //System.out.println( "get Lobby Protocol" );
         switch( data.getProtocol() ) {
+        case LobbyProtocol.ENTER_LOBBY:
+            //server.broadcast( data );
+            break;
         
+        case LobbyProtocol.EXIT_LOBBY:
+            lobby.removeUser( id );
+            server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
+            break;
+            
         case LobbyProtocol.CREATE_ROOM:
             userLocation = ServerInterface.IN_ROOM_OWNER;
             server = new Room( data.getData() );

@@ -1,5 +1,8 @@
 package server;
 
+import java.util.Iterator;
+import java.util.Vector;
+
 import protocol.Protocol;
 
 interface ServerInterface
@@ -11,4 +14,5 @@ interface ServerInterface
     void broadcast( Protocol data );
     void addUser( ServerReceiver r );
     ServerReceiver removeUser( String id );
+    Vector<String> getUserList();
 }

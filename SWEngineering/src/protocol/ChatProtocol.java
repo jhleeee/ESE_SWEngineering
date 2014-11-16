@@ -6,7 +6,7 @@ public class ChatProtocol implements Protocol
     
     public static final int MESSAGE = 1000;
     public static final int QUIT = 2000;
-    
+
     private String data = null;
     private int protocol = 0;
     

@@ -1,6 +1,7 @@
 package server;
 
 import java.util.Iterator;
+import java.util.Vector;
 
 import common.Util;
 import protocol.Protocol;
@@ -48,5 +49,10 @@ class Lobby implements ServerInterface
         while( it.hasNext() ) {
             it.next().getSender().send( data );
         }
+    }
+
+    @Override
+    public Vector<String> getUserList() {
+        return userList.getIDs();
     }
 }

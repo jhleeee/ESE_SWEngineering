@@ -1,9 +1,11 @@
 package server;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 
 class ClientManager
@@ -46,13 +48,33 @@ class ClientManager
     ServerReceiver getReceiver( String id ) {
         return clients.get( id );
     }
-    Iterator<ServerReceiver> getReceivers() {
-        return clients.values().iterator();
+    /*
+    Vector<ServerReceiver> getReceivers() {
+        Vector<ServerReceiver> ret = new Vector<ServerReceiver>(getSize());
+        Iterator<ServerReceiver> it = clients.values().iterator();
+        while( it.hasNext() ) {
+            ret.add( it.next() );
+        }
+        return ret;
+    }
+    */
+    Vector<String> getIDs() {
+        Vector<String> ret = new Vector<String>(getSize());
+        Iterator<String> it = clients.keySet().iterator();
+        while( it.hasNext() ) {
+            ret.add( it.next() );
+        }
+        return ret;
     }
     
+    Iterator<ServerReceiver> getReceivers() {
+        ArrayList ls;
+        return clients.values().iterator();
+    }
+    /*
     Iterator<String> getIDs() {
         return clients.keySet().iterator();
-    }
+    }*/
     
     int getSize() {
         return clients.size();

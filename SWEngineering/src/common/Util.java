@@ -26,6 +26,7 @@ public class Util
        } 
    } 
    
+
    public static String getTime() {
        SimpleDateFormat sdf;
        GregorianCalendar time;

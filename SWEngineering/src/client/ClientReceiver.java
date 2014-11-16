@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.Scanner;
 
 import client.gui.LobbyPanel;
 import client.gui.MainFrame;
@@ -15,6 +16,7 @@ class ClientReceiver extends Thread
     private Sender sender = null;
     private ObjectInputStream in = null;
     
+    private String id = null;
     private int protocol = 0;
     private String data = null;
     
@@ -25,10 +27,20 @@ class ClientReceiver extends Thread
     ClientReceiver( Socket socket ) throws IOException {
         sender = new Sender( socket );
         in = new ObjectInputStream( socket.getInputStream() );
+        //
+        // 테스트
+        Scanner scn = new Scanner( System.in );
+        id = scn.next();
+        sender.send( new ChatProtocol( 0, id ) );
         
+        //
+        //
         frame = new MainFrame( sender );
-        frame.setPanel( new LobbyPanel() );
+        frame.setPanel( new LobbyPanel( sender ) );
         frame.setVisible( true );
+        
+        // 테스트
+        sender.send( new ChatProtocol( 0, id ) );
     }
     
     Sender getSender() {
@@ -67,6 +79,7 @@ class ClientReceiver extends Thread
             close();
         }
         catch( IOException | ClassNotFoundException e ) {
+            e.printStackTrace();
             System.out.println("fail to read data");
         }
 
@@ -74,12 +87,34 @@ class ClientReceiver extends Thread
     
     private void handleProtocol( ChatProtocol p ) {
         //System.out.println( "get Chat Protocol" );
-        // 채팅, data가 보내는 메시지
-        System.out.println( p.getData() );
+        switch( p.getProtocol() ) {
+        case ChatProtocol.MESSAGE:
+            frame.printMessage( p.getData() );
+            break;
+            
+        case ChatProtocol.QUIT:
+            
+            
+            break;
+        }
     }
     
     private void handleProtocol( LobbyProtocol p ) {
         //System.out.println( "get Lobby Protocol" );
+        switch( p.getProtocol() ) {
+        case LobbyProtocol.ENTER_LOBBY:
+            frame.addUser( p.getData() );
+            break;
+            
+        case LobbyProtocol.USER_LIST:
+            p.getList().remove( id );
+            frame.addUserList( p.getList() );
+            break;
+            
+        case LobbyProtocol.EXIT_LOBBY:
+            frame.removeUser( p.getData() );
+            break;
+        }
     }
     
     private void handleProtocol( RoomProtocol p ) {

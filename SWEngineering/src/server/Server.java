@@ -2,7 +2,9 @@ package server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
+import protocol.LobbyProtocol;
 import protocol.TestProtocol;
 import common.*;
 
@@ -17,6 +19,7 @@ public class Server
         //LoginSession login = null;
         Lobby lobby = null;
         
+        String id = null;
         ServerReceiver r = null;
         Sender s1 = null;
         Sender s2 = null;
@@ -32,10 +35,11 @@ public class Server
                         + ":" + socket.getPort() + "]" );
                 //login.addUser( new ServerReceiver( socket ) );
                 
+                
                 // 테스트
-                r = new ServerReceiver( socket, lobby, Integer.toString( ++num ) );
-                lobby.addUser( r );
+                r = new ServerReceiver( socket, lobby );
                 r.start();
+                /*
                 if( num == 1 ) {
                     //System.out.println( "send Test 1" );
                     s1 = r.getSender();
@@ -47,7 +51,8 @@ public class Server
                     s2 = r.getSender();
                     // 방 접속
                     s2.send( new TestProtocol( "2" ) );
-                }
+                
+                }*/
             }
         }
         catch( Exception e ) {}

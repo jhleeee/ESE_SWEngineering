@@ -1,9 +1,9 @@
 package server;
 
 import java.util.Iterator;
+import java.util.Vector;
 
 import common.Util;
-
 import protocol.Protocol;
 
 class Room implements ServerInterface
@@ -53,6 +53,11 @@ class Room implements ServerInterface
         while( it.hasNext() ) {
             it.next().getSender().send( data );
         }
+    }
+
+    @Override
+    public Vector<String> getUserList() {
+        return userList.getIDs();
     }
 
 }
