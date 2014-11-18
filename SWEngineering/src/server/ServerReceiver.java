@@ -98,26 +98,40 @@ class ServerReceiver extends Thread
 
     }
     
-    private void handleProtocol( ChatProtocol data ) {
+    private void handleProtocol( ChatProtocol p ) {
         //System.out.println( "get Chat Protocol" );
-        switch( data.getProtocol() ) {
+        switch( p.getProtocol() ) {
         
         case ChatProtocol.MESSAGE:
-            data.setData( id + " : " + data.getData() + "\n" );
-            server.broadcast( data );
-
+            p.setData( id + " : " + p.getData() + "\n" );
+            server.broadcast( p );
             break;
             
+        case ChatProtocol.WHISPER:
+            Sender s = lobby.getSender( p.getID() );
+            if( s == null ) {
+                sender.send( new ChatProtocol( ChatProtocol.REJECT, "[SYSTEM] 접속하지 않았거나 존재하지 않는 대상입니다.\n" ) );
+            }
+            else if( s.equals( sender ) ) {
+                sender.send( new ChatProtocol( ChatProtocol.REJECT, "[SYSTEM] 자기 자신에게 보낼 수 없습니다.\n" ) );
+            }
+            else {
+                p.setData( id + " : " + p.getData() + "\n" );
+                s.send( p );
+            }
+            break;
+            
+            // 있어야 되나 확인
         case ChatProtocol.QUIT:
-            // 똑같음
+            // 종료처리
             close();
             break;
         }
     }
     
-    private void handleProtocol( LobbyProtocol data ) {
+    private void handleProtocol( LobbyProtocol p ) {
         //System.out.println( "get Lobby Protocol" );
-        switch( data.getProtocol() ) {
+        switch( p.getProtocol() ) {
         case LobbyProtocol.ENTER_LOBBY:
             //server.broadcast( data );
             break;
@@ -129,7 +143,7 @@ class ServerReceiver extends Thread
             
         case LobbyProtocol.CREATE_ROOM:
             userLocation = ServerInterface.IN_ROOM_OWNER;
-            server = new Room( data.getData() );
+            server = new Room( p.getData() );
             
             // 중복검사 할 것
             //
@@ -157,9 +171,9 @@ class ServerReceiver extends Thread
         }
     }
     
-    private void handleProtocol( RoomProtocol data ) {
+    private void handleProtocol( RoomProtocol p ) {
         //System.out.println( "get Room Protocol" );
-        switch( data.getProtocol() ) {
+        switch( p.getProtocol() ) {
         
         case RoomProtocol.START:
             
@@ -179,9 +193,9 @@ class ServerReceiver extends Thread
         }
     }
     
-    private void handleProtocol( GameProtocol data ) {
+    private void handleProtocol( GameProtocol p ) {
         //System.out.println( "get Game Protocol" );
-        switch( data.getProtocol() ) {
+        switch( p.getProtocol() ) {
         
         case GameProtocol.PROTOCOL:
             // do something

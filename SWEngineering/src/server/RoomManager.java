@@ -19,12 +19,23 @@ public class RoomManager
     synchronized void addRoom( Room room ) {
         rooms.put( room.getRoomName(), room );
     }
+    
     synchronized void addRoom( String name, Room room ) {
         rooms.put( name, room );
     }
     
     synchronized void deleteRoom( String name ) {
         rooms.remove( name );
+    }
+    
+    ServerReceiver getReceiver( String id ) {
+        Iterator<Room> it_room = rooms.values().iterator();
+        while( it_room.hasNext() ) {
+            ServerReceiver ret = it_room.next().getReceiver( id );
+            if( ret != null )
+                return ret;
+            }
+        return null;
     }
     
     Room getRoom( String name ) {

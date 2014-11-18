@@ -28,15 +28,25 @@ class Room implements ServerInterface
         return roomName;
     }
     
+    @Override
     public void addUser( ServerReceiver r ) {
         Util.println( "Room\t\tadd user : "+roomName+"\t\t\t"+r.getInfo() );
         userList.addUser( r );
     }
     
+    @Override
     public ServerReceiver removeUser( String id ) {
         Util.println( "Room\t\tremove user : "+roomName+"\t\t\t"
                       + userList.getReceiver( id ).getInfo() );
         return userList.removeUser( id );
+    }
+    
+    ServerReceiver getReceiver( String id ) {
+        return userList.getReceiver( id );
+    }
+    
+    Iterator<ServerReceiver> getReceivers() {
+        return userList.getReceivers();
     }
     
     boolean isInGame() {

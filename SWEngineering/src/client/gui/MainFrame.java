@@ -1,6 +1,7 @@
 package client.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -16,6 +17,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import common.Sender;
@@ -81,13 +83,21 @@ public class MainFrame extends JFrame
     }
     
 
-    public void printMessage( String msg ) {
-        panel.printMessage( msg );
+    public void printMessage( String msg, Color color ) {
+        panel.printMessage( msg, color );
     }
 
 
     public void addUserList( Vector<String> vector ) {
         panel.addUserList( vector );
         
+    }
+    
+    public void popup( String title, String msg, int option ) {
+        JOptionPane.showMessageDialog( this, msg, title, option );
+    }
+    
+    public void close() {
+        dispatchEvent( new WindowEvent( this, WindowEvent.WINDOW_CLOSING ));
     }
 }

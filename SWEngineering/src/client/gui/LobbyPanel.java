@@ -34,6 +34,7 @@ import javax.swing.SwingConstants;
 
 import protocol.ChatProtocol;
 import common.Sender;
+import common.Util;
 
 import java.awt.Font;
 import java.util.Iterator;
@@ -43,7 +44,7 @@ public class LobbyPanel extends JPanel implements PanelInterface
 {
     private static final long serialVersionUID = 1L;
     private JTextField msg_textField;
-    private JTextArea msg_textArea;
+    private JTextPane msg_textPane;
     private JTextField whisper_textField;
     private DefaultListModel<String> userList;
     
@@ -60,8 +61,10 @@ public class LobbyPanel extends JPanel implements PanelInterface
     }
     
     @Override
-    public void printMessage( String msg ) {
-        msg_textArea.append( msg );
+    public void printMessage( String msg, Color color ) {
+        msg_textPane.setEditable(true);
+        Util.appendToPane( msg_textPane, msg, color );
+        msg_textPane.setEditable(false);
     }
 
     @Override
@@ -89,10 +92,10 @@ public class LobbyPanel extends JPanel implements PanelInterface
         scrollPane.setBounds(12, 10, 713, 149);
         chat_panel.add(scrollPane);
         
-        msg_textArea = new JTextArea();
-        msg_textArea.setEditable(false);
-        msg_textArea.setLineWrap( true );
-        scrollPane.setViewportView(msg_textArea);
+        msg_textPane = new JTextPane();
+        msg_textPane.setEditable(false);
+        //msg_textPane.setLineWrap( true );
+        scrollPane.setViewportView( msg_textPane );
         
         msg_textField = new JTextField();
         msg_textField.setBounds(164, 169, 562, 21);
@@ -102,7 +105,15 @@ public class LobbyPanel extends JPanel implements PanelInterface
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                sender.send( new ChatProtocol( ChatProtocol.MESSAGE, msg_textField.getText() ) );
+                String whisper_id = whisper_textField.getText();
+                // 귓말 대상이 없으면
+                if( whisper_id.isEmpty() ) {
+                    sender.send( new ChatProtocol( ChatProtocol.MESSAGE, msg_textField.getText() ) );    
+                }
+                // 귓말 대상이 있으면
+                else {
+                    sender.send( new ChatProtocol( ChatProtocol.WHISPER, msg_textField.getText(), whisper_id ) );
+                }
                 msg_textField.setText( "" );
             }
         });

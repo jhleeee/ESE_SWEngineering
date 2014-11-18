@@ -3,6 +3,7 @@ package server;
 import java.util.Iterator;
 import java.util.Vector;
 
+import common.Sender;
 import common.Util;
 import protocol.Protocol;
 
@@ -27,11 +28,26 @@ class Lobby implements ServerInterface
         roomList.addRoom( room );
     }
     
+    public Sender getSender( String id ) {
+        ServerReceiver sr = userList.getReceiver( id );
+        if( sr != null ) {
+            return sr.getSender();
+        }
+        else {
+            sr = roomList.getReceiver( id );
+            if( sr != null ) 
+                return sr.getSender();
+        }
+        return null;
+    }
+    
+    @Override
     public void addUser( ServerReceiver r ) {
         Util.println( "Lobby\t\tadd user\t\t\t\t"+r.getInfo() );
         userList.addUser( r );
     }
     
+    @Override
     public ServerReceiver removeUser( String id ) {
         Util.println( "Lobby\t\tremove user\t\t\t\t"
                       +userList.getReceiver( id ).getInfo() );

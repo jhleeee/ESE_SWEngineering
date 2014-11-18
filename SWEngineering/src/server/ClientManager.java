@@ -17,22 +17,6 @@ class ClientManager
         clients = Collections.synchronizedMap(
                 new HashMap<String, ServerReceiver>() );
     }
-    /*
-    ClientManager( String id, ServerReceiver r ) {
-        clients = Collections.synchronizedMap(
-                new HashMap<String, ServerReceiver>() );   
-        
-        addUser( id, r );
-    }
-    ClientManager( String id1, ServerReceiver r1,
-                          String id2, ServerReceiver r2 ) {
-        clients = Collections.synchronizedMap(
-                new HashMap<String, ServerReceiver>() );       
-        
-        addUser( id1, r1 );
-        addUser( id2, r2 );
-    }
-    */
     
     synchronized void addUser( ServerReceiver r ) {
         clients.put( r.getID(), r );
@@ -44,6 +28,7 @@ class ClientManager
     synchronized ServerReceiver removeUser( String id ) {
         return clients.remove( id );
     }
+    
     
     ServerReceiver getReceiver( String id ) {
         return clients.get( id );
@@ -68,7 +53,6 @@ class ClientManager
     }
     
     Iterator<ServerReceiver> getReceivers() {
-        ArrayList ls;
         return clients.values().iterator();
     }
     /*

@@ -1,10 +1,13 @@
 package client;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Scanner;
+
+import javax.swing.JOptionPane;
 
 import client.gui.LobbyPanel;
 import client.gui.MainFrame;
@@ -48,6 +51,7 @@ class ClientReceiver extends Thread
     }
     private void close() {
         this.interrupt();
+        frame.close();
     }
     
     // 필요한 메소드 있으면 만들어
@@ -76,6 +80,7 @@ class ClientReceiver extends Thread
         }
         catch( SocketException e ) {
             // 서버 종료
+            frame.popup( null, "서버가 종료되었습니다", JOptionPane.ERROR_MESSAGE );
             close();
         }
         catch( IOException | ClassNotFoundException e ) {
@@ -89,7 +94,15 @@ class ClientReceiver extends Thread
         //System.out.println( "get Chat Protocol" );
         switch( p.getProtocol() ) {
         case ChatProtocol.MESSAGE:
-            frame.printMessage( p.getData() );
+            frame.printMessage( p.getData(), Color.BLACK );
+            break;
+            
+        case ChatProtocol.WHISPER:
+            frame.printMessage( p.getData(), Color.BLUE );
+            break;
+            
+        case ChatProtocol.REJECT:
+            frame.printMessage( p.getData(), Color.RED );
             break;
             
         case ChatProtocol.QUIT:
