@@ -1,104 +1,45 @@
-package test;
-import java.awt.*;
-import java.awt.event.*; 
 import javax.swing.*;
- 
-public class LoginView extends Frame implements ActionListener, ItemListener,Runnable
-{
-	 DTO dto = new DTO();//DTO 객체 생성
-	 JTextField in_ID; //아이디
-	 JPasswordField in_PW; //비밀번호
-	 JButton login; //로그인 버튼
- 
-	 public LoginView(String str) 
-	 {
-		  super(str);
-		  init();
-		 
-		  this.setLocation(100, 100); //프레임 시작위치
-		  super.setVisible(true); //실제로 프레임을 화면에 출력
-		  super.setSize(300, 150); //프레임의 처음 크기
-		  super.setResizable(true); //프레임 사이즈 조절
-	 
-	 }
- 
-	 public void init() 
-	 {
-		  Panel p = new Panel(); 
-		 
-		  JLabel id = new JLabel("아이디");
-		  id.setBounds(10, 10, 80, 25);
-		  
-		  this.addWindowListener(new WindowAdapter() 
-			 { 
-				 // x를 눌렀을때 종료
-				 public void windowClosing(WindowEvent e)
-				 {
-					 System.exit(0);
-				 }
-			 });
-		  
-		  JLabel password = new JLabel("비밀번호");
-		  password.setBounds(10, 40, 80, 25);
-		  
 
-		  login = new JButton("로그인");
-		  login.setBounds(100, 80, 80, 25);
-		  login.addActionListener(this); //버튼이벤트 
-		  
-		  in_ID = new JTextField(20);
-		  in_ID.setBounds(100, 10, 160, 25);
-		  
-		  in_PW = new JPasswordField(20);
-		  in_PW.setBounds(100, 40, 160, 25);
-		  
-		  p.setLayout(null);
-		  p.add(id);
-		  p.add(password);
-		  p.add(login);
-		  p.add(in_PW);
-		  p.add(in_ID);
-		  
-		  add(p);
-		  
-	 }
+public class LoginView {
 
-	 public static void main(String[] args) 
-	 {
-		 LoginView exam = new LoginView("로그인");
-	 }
- 
-	 public void run() 
-	 {
-		 //스레드 정의부분
-	 }
- 
-	 public void itemStateChanged(ItemEvent e) 
-	 { 
-		 // 체크상태 확인
-	 }
-	 
-	 public void actionPerformed(ActionEvent e) 
-	 { 
-		 //액션이벤트
-		 Object obj = e.getSource();
- 
-		 //로그인 버튼 눌렀을 떄
-		 if ((JButton) obj == login)
-		 {
-			 dto.setId(in_ID.getText()); //입력된 아이디를 가져와 dto에 저장
-			 dto.setPassword(in_PW.getText());  //입력된 비밀번호를 가져와 dto에 저장
-   
-			 try 
-			 {
-				 insertDAO.create(dto);  //dto를 DAO에 넘겨준다.
-			 } 
-			 catch (Exception e1) 
-			 {
-				 // TODO Auto-generated catch block
-				 e1.printStackTrace();
-			 } 
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("로그인");
+		frame.setSize(300, 150);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		 }
-	 }
+		JPanel panel = new JPanel();
+		frame.add(panel);
+		placeComponents(panel);
+
+		frame.setVisible(true);
+	}
+
+	private static void placeComponents(JPanel panel) 
+	{
+		panel.setLayout(null);
+
+		JLabel IDLabel = new JLabel("아이디");
+		IDLabel.setBounds(10, 10, 80, 25);
+		panel.add(IDLabel);
+
+		JTextField IDText = new JTextField(20);
+		IDText.setBounds(100, 10, 160, 25);
+		panel.add(IDText);
+		
+		JLabel PasswordLabel = new JLabel("패스워드");
+		PasswordLabel.setBounds(10, 40, 80, 25);
+		panel.add(PasswordLabel);
+
+		JPasswordField PasswordText = new JPasswordField(20);
+		PasswordText.setBounds(100, 40, 160, 25);
+		panel.add(PasswordText);
+
+		JButton LoginButton = new JButton("로그인");
+		LoginButton.setBounds(10, 80, 80, 25);
+		panel.add(LoginButton);
+		
+		JButton CancleButton = new JButton("취소");
+		CancleButton.setBounds(180, 80, 80, 25);
+		panel.add(CancleButton);
+	}
 }
