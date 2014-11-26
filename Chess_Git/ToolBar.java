@@ -1,16 +1,4 @@
-/*
-G Chess version 1.0
-Copyright (c) 2010 Gary Menezes
 
-Copyright Notice
-  You may use the accompanying code under the following conditions:
-  You may:
-    1. Use this code for non-commercial, educational, and personal purposes.
-    2. Redistribute this code *as is* along with included copyright notices.
-  You may not:
-    1. Use this code for any commercial purpose.
-    2. Create any derivative works for redistribution.
-*/
 import java.awt.*;
 
 import javax.swing.*;
@@ -36,7 +24,8 @@ public class ToolBar extends JPanel
 		title1.setPreferredSize(new Dimension(size.width-5, 30));
 		title1.setFont(new Font("Courier", title1.getFont().getStyle(), 20));
 		title1.setOpaque(true);
-		title1.setBackground(new Color(46,184,0));
+		title1.setBackground(Color.BLACK);
+		
 		JLabel title2 = new JLabel("BAR", JLabel.CENTER);
 		title2.setFont(new Font("Courier", title2.getFont().getStyle(), 20));
 		title2.setPreferredSize(new Dimension(size.width-5, 30));
@@ -52,7 +41,7 @@ public class ToolBar extends JPanel
 		JButton undo = new JButton("UNDO");
 		undo.setPreferredSize(new Dimension(size.width-5, 60));
 		undo.setBorder(BorderFactory.createRaisedBevelBorder());
-		undo.setBackground(Color.LIGHT_GRAY);
+		undo.setBackground(Color.WHITE);
 		undo.setToolTipText("Undo Move");
 		
 		JButton highlight = new JButton("HIGHLIGHT");
@@ -64,7 +53,7 @@ public class ToolBar extends JPanel
 		JButton newGameButton = new JButton("NEW");
 		newGameButton.setPreferredSize(new Dimension(size.width-5, 60));
 		newGameButton.setBorder(BorderFactory.createRaisedBevelBorder());
-		newGameButton.setBackground(Color.LIGHT_GRAY);
+		newGameButton.setBackground(Color.WHITE);
 		newGameButton.setToolTipText("New Game");
 		
 		JButton exitButton = new JButton("EXIT");
@@ -87,51 +76,7 @@ public class ToolBar extends JPanel
 		
 		add(title);
 		
-		/*JPanel one = new JPanel();
-		one.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		one.setLayout(new BorderLayout());
-		one.setPreferredSize(new Dimension(size.width-5, 70));
-		JLabel flipLabel = new JLabel("FLIP SIDE", JLabel.CENTER);
-		flipLabel.setFont(new Font("Monospaced", flipLabel.getFont().getStyle(), 11));
-		one.add(flipLabel, BorderLayout.NORTH);
-		one.add(flip, BorderLayout.SOUTH);
 		
-		JPanel two = new JPanel();
-		two.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		two.setLayout(new BorderLayout());
-		two.setPreferredSize(new Dimension(size.width-5, 70));
-		JLabel undoLabel = new JLabel("UNDO MOVE", JLabel.CENTER);
-		undoLabel.setFont(new Font("Monospaced", undoLabel.getFont().getStyle(), 11));
-		two.add(undoLabel, BorderLayout.NORTH);
-		two.add(undo, BorderLayout.SOUTH);
-		
-		JPanel three = new JPanel();
-		three.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		three.setLayout(new BorderLayout());
-		three.setPreferredSize(new Dimension(size.width-5, 70));
-		JLabel highlightLabel = new JLabel("HIGHLIGHT", JLabel.CENTER);
-		highlightLabel.setFont(new Font("Monospaced", highlightLabel.getFont().getStyle(), 11));
-		three.add(highlightLabel, BorderLayout.NORTH);
-		three.add(highlight, BorderLayout.SOUTH);
-		
-		JPanel four = new JPanel();
-		four.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		four.setLayout(new BorderLayout());
-		four.setPreferredSize(new Dimension(size.width-5, 70));
-		JLabel newGameLabel = new JLabel("NEW GAME", JLabel.CENTER);
-		newGameLabel.setFont(new Font("Monospaced", newGameLabel.getFont().getStyle(), 11));
-		four.add(newGameLabel, BorderLayout.NORTH);
-		four.add(newGameButton, BorderLayout.SOUTH);
-		
-		JPanel five = new JPanel();
-		five.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		five.setLayout(new BorderLayout());
-		five.setPreferredSize(new Dimension(size.width-5, 70));
-		JLabel exitLabel = new JLabel("EXIT", JLabel.CENTER);
-		exitLabel.setFont(new Font("Monospaced", exitLabel.getFont().getStyle(), 11));
-		five.add(exitLabel, BorderLayout.NORTH);
-		five.add(exitButton, BorderLayout.SOUTH);*/
-				
 		add(flip);
 		add(undo);
 		add(highlight);
