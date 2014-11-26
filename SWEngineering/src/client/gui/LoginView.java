@@ -1,17 +1,20 @@
 package test;
+
 import java.awt.*;
 import java.awt.event.*; 
 import javax.swing.*;
  
-public class LoginView extends Frame implements ActionListener, ItemListener,Runnable
+public class LoginView extends Frame implements ActionListener, Runnable
 {
 	 DTO dto = new DTO();//DTO 객체 생성
 	 JTextField in_ID; //아이디
 	 JPasswordField in_PW; //비밀번호
 	 JButton login; //로그인 버튼
+	 ImageIcon im;
  
 	 public LoginView(String str) 
 	 {
+		 
 		  super(str);
 		  init();
 		 
@@ -24,7 +27,7 @@ public class LoginView extends Frame implements ActionListener, ItemListener,Run
  
 	 public void init() 
 	 {
-		  Panel p = new Panel(); 
+		  JPanel p = new JPanel(); 
 		 
 		  JLabel id = new JLabel("아이디");
 		  id.setBounds(10, 10, 80, 25);
@@ -41,8 +44,8 @@ public class LoginView extends Frame implements ActionListener, ItemListener,Run
 		  JLabel password = new JLabel("비밀번호");
 		  password.setBounds(10, 40, 80, 25);
 		  
-
-		  login = new JButton("로그인");
+		  im = new ImageIcon("log.jpg");
+		  login = new JButton("",im);
 		  login.setBounds(100, 80, 80, 25);
 		  login.addActionListener(this); //버튼이벤트 
 		  
@@ -72,11 +75,6 @@ public class LoginView extends Frame implements ActionListener, ItemListener,Run
 	 {
 		 //스레드 정의부분
 	 }
- 
-	 public void itemStateChanged(ItemEvent e) 
-	 { 
-		 // 체크상태 확인
-	 }
 	 
 	 public void actionPerformed(ActionEvent e) 
 	 { 
@@ -88,7 +86,7 @@ public class LoginView extends Frame implements ActionListener, ItemListener,Run
 		 {
 			 dto.setId(in_ID.getText()); //입력된 아이디를 가져와 dto에 저장
 			 dto.setPassword(in_PW.getText());  //입력된 비밀번호를 가져와 dto에 저장
-   
+			 
 			 try 
 			 {
 				 insertDAO.create(dto);  //dto를 DAO에 넘겨준다.
