@@ -1,3 +1,16 @@
+/*
+G Chess version 1.0
+Copyright (c) 2010 Gary Menezes
+
+Copyright Notice
+  You may use the accompanying code under the following conditions:
+  You may:
+    1. Use this code for non-commercial, educational, and personal purposes.
+    2. Redistribute this code *as is* along with included copyright notices.
+  You may not:
+    1. Use this code for any commercial purpose.
+    2. Create any derivative works for redistribution.
+*/
 import java.awt.*;
 import java.awt.event.ActionListener;
 import javax.swing.*;
@@ -10,8 +23,8 @@ public class ChessBoard extends JPanel implements Serializable
 	private boolean isFlipped;
 	transient private GUI listener;
 	private JButton[][] squares;
-	private Color cream;
-	private Color green;
+	private Color white;
+	private Color black;
 	
 	public ChessBoard(BoardState boardState, GUI listener, Dimension size)
 	{
@@ -21,11 +34,14 @@ public class ChessBoard extends JPanel implements Serializable
 		
 		isFlipped = false;
 		this.listener = listener;
-		green = new Color(51,102,255);
-		cream = new Color(46,184,0);
+		//***
+		//cream = new Color(228,219,186);
+		//green = new Color(92,192,106);
+		black = new Color(255,255,255);
+		white = new Color(0,0,0);
 		
 		setOpaque(true);
-		setBackground(green);
+		setBackground(black);
 
 		setPreferredSize(size);
 		
@@ -38,7 +54,7 @@ public class ChessBoard extends JPanel implements Serializable
 				this.boardState = boardState;
 			}
 			public void paintComponent(Graphics g) {
-				super.paintComponent(g); 
+				super.paintComponent(g); // Paint background, border
 				int x = -1;
 				int y = -1;
 				for(int a=0; a<boardState.getState().length; a++)
@@ -162,14 +178,14 @@ public class ChessBoard extends JPanel implements Serializable
 			{
 				if(y%2==0)
 					if(x%2==start)
-						squares[y][x].setBackground(cream);
+						squares[y][x].setBackground(white);
 					else
-						squares[y][x].setBackground(green);
+						squares[y][x].setBackground(black);
 				else
 					if(x%2==start)
-						squares[y][x].setBackground(green);
+						squares[y][x].setBackground(black);
 					else
-						squares[y][x].setBackground(cream);
+						squares[y][x].setBackground(white);
 			}
 		repaint();
 	}
@@ -194,7 +210,13 @@ public class ChessBoard extends JPanel implements Serializable
 	
 	public void updateBoard(BoardState boardState)
 	{
-
+/*		this.boardState = boardState;
+		for(int y=0; y<squares.length; y++)
+			for(int x=0; x<squares.length; x++)
+				if(boardState.getState()[y][x]==null)
+					getAtLocation(new Location(y,x)).paintComponents(g);
+				else
+					getAtLocation(new Location(y,x)).setIcon(null);*/
 		resetBackground();
 		resetBorders();
 		repaint();

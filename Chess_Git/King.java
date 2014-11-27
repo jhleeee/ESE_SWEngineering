@@ -1,20 +1,6 @@
-/*
-G Chess version 1.0
-Copyright (c) 2010 Gary Menezes
-
-Copyright Notice
-  You may use the accompanying code under the following conditions:
-  You may:
-    1. Use this code for non-commercial, educational, and personal purposes.
-    2. Redistribute this code *as is* along with included copyright notices.
-  You may not:
-    1. Use this code for any commercial purpose.
-    2. Create any derivative works for redistribution.
-*/
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
+import java.awt.*;
 import java.util.*;
+import javax.swing.*;
 
 public class King extends ChessPiece
 {
@@ -25,12 +11,10 @@ public class King extends ChessPiece
 	public King(boolean isWhite, Location loc)
 	{
 		super(isWhite, loc);
-		
 		hasMoved=false;
-		
 		isChecked=false;		
 	}
-	
+
 	public void draw(Graphics g)
 	{
 		final int x = 20;
@@ -53,26 +37,25 @@ public class King extends ChessPiece
 		g.drawString("+", x, y);
 	}
 	
+	//ImageIcon icon=new ImageIcon("king.jpg");
+	//JLabel label = new JLabel(icon);
+	
 	public boolean getHasMoved()
 	{
 		return hasMoved;
 	}
-	
 	public void setHasMoved(boolean input)
 	{
 		hasMoved=input;
 	}
-	
 	public boolean isChecked()
 	{
 		return isChecked;
 	}
-	
 	public void setIsChecked(boolean check)
 	{
 		isChecked=check;
 	}
-	
 	public void updateIsChecked(BoardState board)
 	{
 		ArrayList<Location> possibleChecks = getPossibleChecks(board);
@@ -126,7 +109,6 @@ public class King extends ChessPiece
 		locs[5] = new Location(y+1,x+1);
 		locs[6] = new Location(y+1,x);
 		locs[7] = new Location(y+1,x-1);
-		
 		locs[8] = new Location(y,x-2);
 		locs[9] = new Location(y,x+2);
 		
