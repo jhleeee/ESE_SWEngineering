@@ -4,30 +4,44 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 public class RoomManager
 {
-    private Map<String, Room> rooms;
+    private Room[] rooms;
+    private final int size;
     // flag 고려
     
-    RoomManager() {
-        rooms = Collections.synchronizedMap(
-                new HashMap<String, Room>() );
+    RoomManager( int size ) {
+        rooms = new Room[50];
+        this.size = size;
     }
     
-    // 둘 다 필요한 지 고려
-    synchronized void addRoom( Room room ) {
-        rooms.put( room.getRoomName(), room );
+    synchronized boolean addRoom( Room room, int idx ) {
+        if( rooms[idx] != null )
+            return false;
+        else
+            rooms[idx] = room;
+        return true;
     }
     
-    synchronized void addRoom( String name, Room room ) {
-        rooms.put( name, room );
+    synchronized void deleteRoom( int idx ) {
+        rooms[idx] = null;
     }
     
-    synchronized void deleteRoom( String name ) {
-        rooms.remove( name );
+    ServerReceiver getReceiver( String id ) {
+        ServerReceiver ret = null;
+        for( Room each : rooms ) {
+            if( each != null ) {
+                ret = each.getReceiver( id );
+                if( ret != null )
+                    return ret;
+            }
+        }
+        return null; 
     }
     
+    /*
     ServerReceiver getReceiver( String id ) {
         Iterator<Room> it_room = rooms.values().iterator();
         while( it_room.hasNext() ) {
@@ -37,16 +51,14 @@ public class RoomManager
             }
         return null;
     }
+    */
     
-    Room getRoom( String name ) {
-        return rooms.get( name );
+    Room getRoom( int idx ) {
+        return rooms[idx];
     }
     
-    Iterator<String> getRoomNames() {
-        return rooms.keySet().iterator();
-    }
     
     int getSize() {
-        return rooms.size();
+        return size;
     }
 }

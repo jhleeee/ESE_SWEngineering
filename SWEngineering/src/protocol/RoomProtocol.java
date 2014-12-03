@@ -15,6 +15,7 @@ public class RoomProtocol implements Protocol
     public String getData() {
         return data;
     }
+    @Override
     public int getProtocol() {
         return protocol;
     }

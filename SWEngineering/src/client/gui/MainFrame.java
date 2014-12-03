@@ -16,6 +16,7 @@ import java.awt.event.WindowEvent;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,6 +35,8 @@ public class MainFrame extends JFrame
     private JPanel contentPane;
     
     private LobbyPanel lobbyPanel;
+    //private RoomPanel roomPanel;
+    private TestRoomPanel testRoomPanel;
     private PanelInterface panel;
 
     /**
@@ -58,21 +61,45 @@ public class MainFrame extends JFrame
                 System.exit(0);
             }
         });
+        
+        lobbyPanel = new LobbyPanel( sender );
+        testRoomPanel = new TestRoomPanel( sender );
+        setPanel( PanelInterface.LobbyPanel );
     }
 
+    public void addRoom( String name, int idx ) {
+        JButton btn = RoomCard.getRoomButton( idx );
+        btn.setText( (idx+1) + " " + name );
+    }
     
-    public void setPanel( LobbyPanel lp ) {
+    public void setRoomState( int idx, int state ) {
+        
+    }
+    
+    public void addRoomCard() {
+        lobbyPanel.addRoomCard();
+    }
+    
+    public void setPanel( int type ) {
         contentPane.removeAll();
-        
-        panel = (PanelInterface) lp;
-        lobbyPanel = lp;
-        contentPane.add( lp );
+        switch( type ) {
+        case PanelInterface.LobbyPanel:
+            contentPane.add( lobbyPanel );
+            lobbyPanel.setVisible( true );
+            panel = ( PanelInterface )lobbyPanel;
+            break;
+            
+        case PanelInterface.RoomPanel:
+            break;
+            
+        case PanelInterface.TestRoomPanel:
+            contentPane.add( testRoomPanel );
+            testRoomPanel.setVisible( true );
+            panel = ( PanelInterface )testRoomPanel;
+            break;
+        }
+        this.pack();
     }
-    /*
-    public void setPanel( RoomPanel rp ) {
-        
-    }
-    */
     
     public void removeUser( String id ) {
         panel.removeUser( id );
@@ -93,8 +120,11 @@ public class MainFrame extends JFrame
         
     }
     
-    public void popup( String title, String msg, int option ) {
-        JOptionPane.showMessageDialog( this, msg, title, option );
+    public void messagePopup( String title, String msg ) {
+        JOptionPane.showMessageDialog( this, msg, title, JOptionPane.ERROR_MESSAGE );
+    }
+    public String inputPopup( String title, String msg ) {
+        return JOptionPane.showInputDialog( this, msg, title );
     }
     
     public void close() {

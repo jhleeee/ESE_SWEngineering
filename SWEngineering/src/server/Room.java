@@ -28,9 +28,13 @@ class Room implements ServerInterface
         return roomName;
     }
     
+    int getSize() {
+        return userList.getSize();
+    }
+    
     @Override
     public void addUser( ServerReceiver r ) {
-        Util.println( "Room\t\tadd user : "+roomName+"\t\t\t"+r.getInfo() );
+        Util.println( "Room\t\tadd user : "+roomName+"\t\t\t\t"+r.getInfo() );
         userList.addUser( r );
     }
     

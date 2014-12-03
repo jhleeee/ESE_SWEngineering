@@ -15,17 +15,21 @@ class Lobby implements ServerInterface
     
     Lobby() {
         userList = new ClientManager();
-        roomList = new RoomManager();
+        roomList = new RoomManager( 50 );
         
         Util.println( "Lobby\t\tcreate lobby" );
     }
     
+    Room getRoom( int idx ) {
+        return roomList.getRoom( idx );
+    }
+    /*
     Room getRoom( String name ) {
         return roomList.getRoom( name );
     }
-    
-    void addRoom( Room room ) {
-        roomList.addRoom( room );
+    */
+    boolean addRoom( Room room, int idx ) {
+        return roomList.addRoom( room, idx );
     }
     
     public Sender getSender( String id ) {
@@ -54,9 +58,9 @@ class Lobby implements ServerInterface
         return userList.removeUser( id );
     }
     
-    void deleteRoom( String name ) {
-        Util.println( "Lobby\t\tdelete room" + " : " + name );
-        roomList.deleteRoom( name );
+    void deleteRoom( int idx ) {
+        Util.println( "Lobby\t\tdelete room" + " : " + getRoom( idx ).getRoomName() );
+        roomList.deleteRoom( idx );
     }
     
     @Override

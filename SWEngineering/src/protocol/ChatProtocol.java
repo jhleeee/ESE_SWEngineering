@@ -6,8 +6,9 @@ public class ChatProtocol implements Protocol
     
     public static final int MESSAGE = 1000;
     public static final int WHISPER = 2000;
-    public static final int REJECT = 3000;
+    public static final int SYSTEM = 3000;
     public static final int QUIT = 4000;
+    public static final int NOTICE = 5000;
 
     private String who = null;
     private String data = null;
@@ -33,7 +34,14 @@ public class ChatProtocol implements Protocol
     public String getData() {
         return data;
     }
+    @Override
     public int getProtocol() {
         return protocol;
+    }
+
+    @Override
+    public void setProtocol(int protocol) {
+        // TODO Auto-generated method stub
+        
     }
 }

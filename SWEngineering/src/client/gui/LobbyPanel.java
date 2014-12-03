@@ -6,8 +6,10 @@ import javax.swing.JPanel;
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.Timer;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 
 import javax.swing.JTextPane;
@@ -31,6 +33,8 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import protocol.ChatProtocol;
 import common.Sender;
@@ -43,12 +47,29 @@ import java.util.Vector;
 public class LobbyPanel extends JPanel implements PanelInterface
 {
     private static final long serialVersionUID = 1L;
+    
     private JTextField msg_textField;
     private JTextPane msg_textPane;
     private JTextField whisper_textField;
+    
     private DefaultListModel<String> userList;
+    private Timer timer = null;
+    
+    private JPanel roomList_panel;
+    private CardLayout cardLayout;
+    private int cardNum = 0;
     
     private Sender sender = null;
+    
+    public void addRoomCard() {
+        roomList_panel.add( new RoomCard( sender ), Integer.toString( cardNum++ ) );
+    }
+    
+    public void removeLastRoomCard() {
+        Component[] components = roomList_panel.getComponents();
+        cardLayout.removeLayoutComponent( components[ components.length ] );
+        cardNum--;
+    }
     
     @Override
     public void removeUser(String id) {
@@ -78,7 +99,7 @@ public class LobbyPanel extends JPanel implements PanelInterface
      * Create the panel.
      */
     public LobbyPanel( final Sender sender ) {
-        //this.sender = sender;
+        this.sender = sender;
         setLayout(null);
         
         JPanel chat_panel = new JPanel();
@@ -106,11 +127,11 @@ public class LobbyPanel extends JPanel implements PanelInterface
             @Override
             public void actionPerformed(ActionEvent e) {
                 String whisper_id = whisper_textField.getText();
-                // 귓말 대상이 없으면
+                // 귓말이 아니면
                 if( whisper_id.isEmpty() ) {
                     sender.send( new ChatProtocol( ChatProtocol.MESSAGE, msg_textField.getText() ) );    
                 }
-                // 귓말 대상이 있으면
+                // 귓말이면
                 else {
                     sender.send( new ChatProtocol( ChatProtocol.WHISPER, msg_textField.getText(), whisper_id ) );
                 }
@@ -124,7 +145,7 @@ public class LobbyPanel extends JPanel implements PanelInterface
         whisper_textField.setColumns(10);
         
         JPanel userInfo_panel = new JPanel();
-        userInfo_panel.setBounds(12, 572, 228, 118);
+        userInfo_panel.setBounds(12, 551, 228, 139);
         userInfo_panel.setBackground(Color.LIGHT_GRAY);
         add(userInfo_panel);
         userInfo_panel.setLayout(null);
@@ -138,64 +159,78 @@ public class LobbyPanel extends JPanel implements PanelInterface
         JLabel label = new JLabel("\uC2B9");
         label.setFont(new Font("굴림", Font.BOLD, 12));
         label.setHorizontalAlignment(SwingConstants.CENTER);
-        label.setBounds(55, 36, 40, 20);
+        label.setBounds(55, 40, 40, 20);
         userInfo_panel.add(label);
         
         JLabel label_1 = new JLabel("\uD328");
         label_1.setFont(new Font("굴림", Font.BOLD, 12));
         label_1.setHorizontalAlignment(SwingConstants.CENTER);
-        label_1.setBounds(55, 62, 40, 20);
+        label_1.setBounds(55, 70, 40, 20);
         userInfo_panel.add(label_1);
         
         JLabel label_2 = new JLabel("\uC2B9\uB960");
         label_2.setFont(new Font("굴림", Font.BOLD, 12));
         label_2.setHorizontalAlignment(SwingConstants.CENTER);
-        label_2.setBounds(55, 88, 40, 20);
+        label_2.setBounds(55, 100, 40, 20);
         userInfo_panel.add(label_2);
         
         JLabel win_label = new JLabel("0");
         win_label.setFont(new Font("굴림", Font.BOLD, 12));
         win_label.setBackground(Color.WHITE);
         win_label.setHorizontalAlignment(SwingConstants.CENTER);
-        win_label.setBounds(100, 36, 70, 20);
+        win_label.setBounds(100, 40, 70, 20);
         userInfo_panel.add(win_label);
         
         JLabel lose_label = new JLabel("0");
         lose_label.setFont(new Font("굴림", Font.BOLD, 12));
         lose_label.setHorizontalAlignment(SwingConstants.CENTER);
-        lose_label.setBounds(100, 62, 70, 20);
+        lose_label.setBounds(100, 70, 70, 20);
         userInfo_panel.add(lose_label);
         
         JLabel rate_label = new JLabel("0");
         rate_label.setFont(new Font("굴림", Font.BOLD, 12));
         rate_label.setHorizontalAlignment(SwingConstants.CENTER);
-        rate_label.setBounds(100, 88, 70, 20);
+        rate_label.setBounds(100, 100, 70, 20);
         userInfo_panel.add(rate_label);
         
-        JPanel roomList_panel = new JPanel();
+        roomList_panel = new JPanel();
         roomList_panel.setBackground(Color.LIGHT_GRAY);
         roomList_panel.setBounds(12, 10, 755, 470);
         add(roomList_panel);
-        roomList_panel.setLayout(new CardLayout(0, 0));
+        cardLayout = new CardLayout( 0,0 );
+        roomList_panel.setLayout( cardLayout );
+        
         
         JButton left_button = new JButton("<<");
-        left_button.setBounds(12, 490, 109, 31);
+        left_button.setBounds(12, 490, 109, 48);
+        left_button.addActionListener( new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                cardLayout.previous( roomList_panel );
+            }
+            
+        } );
         add(left_button);
         
         JButton right_button = new JButton(">>");
-        right_button.setBounds(133, 490, 105, 31);
+        right_button.setBounds(133, 490, 105, 48);
+        right_button.addActionListener( new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                cardLayout.next( roomList_panel );
+            }
+            
+        } );
         add(right_button);
-        
-        JButton create_button = new JButton("\uBC29\uB9CC\uB4E4\uAE30");
-        create_button.setBounds(12, 531, 226, 31);
-        add(create_button);
         
         JScrollPane scrollPane_1 = new JScrollPane();
         scrollPane_1.setBounds(779, 10, 209, 470);
         add(scrollPane_1);
         
         userList = new DefaultListModel<String>();
-        JList<String> userList_list = new JList<String>(userList);
+        final JList<String> userList_list = new JList<String>(userList);
         scrollPane_1.setViewportView(userList_list);
         userList_list.setCellRenderer(new DefaultListCellRenderer(){
             private static final long serialVersionUID = 1L;
@@ -203,7 +238,31 @@ public class LobbyPanel extends JPanel implements PanelInterface
                         return CENTER;
                }
         });
+        userList_list.addListSelectionListener(new ListSelectionListener() {
+
+            @Override
+            public void valueChanged(ListSelectionEvent arg0) {
+                if( timer == null ) {
+                    // 1초 대기 후에 선택 해제
+                    timer = new Timer( 1000, new ActionListener() {
+                       public void actionPerformed(ActionEvent evt) {
+                           userList_list.clearSelection();
+                           // sender 로 유저정보 요청
+                       }
+                    });
+                    timer.setRepeats(false);
+                    timer.start();
+                }
+                else {
+                    timer.restart();
+                }
+            }
+        });
+        
+        addRoomCard(); // 1
+        addRoomCard(); // 2
+        addRoomCard(); // 3
+        addRoomCard(); // 4
+        addRoomCard(); // 5
     }
-
-
 }

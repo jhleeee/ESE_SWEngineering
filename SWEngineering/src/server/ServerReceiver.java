@@ -110,13 +110,14 @@ class ServerReceiver extends Thread
         case ChatProtocol.WHISPER:
             Sender s = lobby.getSender( p.getID() );
             if( s == null ) {
-                sender.send( new ChatProtocol( ChatProtocol.REJECT, "[SYSTEM] 접속하지 않았거나 존재하지 않는 대상입니다.\n" ) );
+                sender.send( new ChatProtocol( ChatProtocol.SYSTEM, "[SYSTEM] 접속하지 않았거나 존재하지 않는 대상입니다.\n" ) );
             }
             else if( s.equals( sender ) ) {
-                sender.send( new ChatProtocol( ChatProtocol.REJECT, "[SYSTEM] 자기 자신에게 보낼 수 없습니다.\n" ) );
+                sender.send( new ChatProtocol( ChatProtocol.SYSTEM, "[SYSTEM] 자기 자신에게 보낼 수 없습니다.\n" ) );
             }
             else {
                 p.setData( id + " : " + p.getData() + "\n" );
+                sender.send( p );
                 s.send( p );
             }
             break;
@@ -142,22 +143,56 @@ class ServerReceiver extends Thread
             break;
             
         case LobbyProtocol.CREATE_ROOM:
+        {
+            if( p.getData() == null ) {
+                server.broadcast( new ChatProtocol( 
+                                  ChatProtocol.NOTICE, id+"님이 참가하셨습니다.\n" ));
+                sender.send( new ChatProtocol(
+                                  ChatProtocol.NOTICE, "현재 차례 당 시간제한은 ~초 입니다.\n" ));
+                break;
+            }
+            Room room = new Room( (String)p.getName() );
+            if( lobby.addRoom( (Room)room, (Integer)p.getData() ) == false ) {
+                sender.send( new LobbyProtocol( LobbyProtocol.REJECT_CREATE_ROOM, null ) );
+                break;
+            }
             userLocation = ServerInterface.IN_ROOM_OWNER;
-            server = new Room( p.getData() );
-            
-            // 중복검사 할 것
-            //
-            //
-            
-            lobby.addRoom( (Room)server );
+            server = room;
+            sender.send( p );
             server.addUser( lobby.removeUser( id ) );
-            server.broadcast( new ChatProtocol( 
-                              ChatProtocol.MESSAGE, id+"님이 참가하셨습니다. " ));
-            
+            p.setProtocol( LobbyProtocol.ADD_ROOM );
+            lobby.broadcast( p );
             break;
+        }
             
         case LobbyProtocol.ENTER_ROOM:
-            userLocation = ServerInterface.IN_ROOM_GUEST;
+            if( p.getData() == null ) {
+                server.broadcast( new ChatProtocol( 
+                                  ChatProtocol.NOTICE, id+"님이 참가하셨습니다.\n" ));
+                sender.send( new ChatProtocol(
+                                  ChatProtocol.NOTICE, "현재 차례 당 시간제한은 ~초 입니다.\n" ));
+                // 유저리스트, 정보 전송
+                break;
+            }
+            Room room = lobby.getRoom( (Integer)p.getData() );
+            if( room != null ) {
+                if( room.getSize() == 1 ) {
+                    userLocation = ServerInterface.IN_ROOM_GUEST;
+                    server = room;
+                    server.addUser( lobby.removeUser( id ) );
+                    sender.send( p );
+                }
+                else {
+                    sender.send( new LobbyProtocol( 
+                                 LobbyProtocol.REJECT_ENTER_ROOM, null ));
+                }
+            }
+            else {
+                sender.send( new LobbyProtocol(
+                             LobbyProtocol.CREATE_ROOM, p.getData() ));
+            }
+            /*
+            
             
             // 참가가능 확인
             //
@@ -167,6 +202,7 @@ class ServerReceiver extends Thread
             server.addUser( lobby.removeUser( id ) );
             server.broadcast( new ChatProtocol( 
                               ChatProtocol.MESSAGE, id+"님이 참가하셨습니다. " ));
+                              */
             break;
         }
     }
@@ -188,7 +224,7 @@ class ServerReceiver extends Thread
             break;
             
         case RoomProtocol.EXIT_ROOM:
-            
+            server = lobby;
             break;
         }
     }

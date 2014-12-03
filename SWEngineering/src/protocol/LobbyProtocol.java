@@ -1,7 +1,5 @@
 package protocol;
 
-import java.util.Vector;
-
 public class LobbyProtocol implements Protocol
 {
     private static final long serialVersionUID = 1L;
@@ -11,29 +9,41 @@ public class LobbyProtocol implements Protocol
     public final static int EXIT_LOBBY = 3000;
     public final static int ENTER_LOBBY = 4000;
     public final static int USER_LIST = 5000;
+    public final static int REJECT_ENTER_ROOM = 6000;
+    public final static int REJECT_CREATE_ROOM = 7000;
+    public final static int ADD_ROOM = 8000;
+    public final static int DELETE_ROOM = 9000;
     
-    private Vector<String> list = null;
     private int protocol = 0;
-    private String data = null;
+    private Object data = null;
+    private String name = null;
     
-    public LobbyProtocol( int protocol, String data ) {
+    public LobbyProtocol( int protocol, Object data ) {
         this.protocol = protocol;
         this.data = data;
     }
-    public LobbyProtocol( int protocol, Vector<String> list ) {
-        this.protocol = protocol;
-        this.list = list;
-    }
     
-    public Vector<String> getList() {
-        return list;
-    }
-    public void setData( String data ) {
+    public void setData( Object data ) {
         this.data = data;
     }
-    public String getData() {
+    
+    public void setName( String name ) {
+        this.name = name;
+    }
+    
+    public Object getData() {
         return data;
     }
+    
+    public String getName() {
+        return name;
+    }
+    
+    @Override
+    public void setProtocol( int protocol ) {
+        this.protocol = protocol;
+    }
+    @Override
     public int getProtocol() {
         return protocol;
     }

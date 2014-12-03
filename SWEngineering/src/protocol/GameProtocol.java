@@ -15,6 +15,7 @@ public class GameProtocol implements Protocol
     public String getData() {
         return data;
     }
+    @Override
     public int getProtocol() {
         return protocol;
     }
