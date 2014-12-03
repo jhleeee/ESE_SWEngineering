@@ -13,6 +13,7 @@ public class LobbyProtocol implements Protocol
     public final static int REJECT_CREATE_ROOM = 7000;
     public final static int ADD_ROOM = 8000;
     public final static int DELETE_ROOM = 9000;
+    public final static int ROOM_LIST = 10000;
     
     private int protocol = 0;
     private Object data = null;

@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import common.RoomInfo;
 import common.Sender;
 import protocol.ChatProtocol;
 import protocol.LobbyProtocol;
@@ -57,7 +58,12 @@ public class MainFrame extends JFrame
         
         addWindowListener(new WindowAdapter() {
             public void windowClosing( WindowEvent e ) {
-                sender.send( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, (String)null ));
+                if( panel instanceof LobbyPanel ) {
+                    sender.send( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, (String)null ));
+                }
+                //else if( panel instanceof RoomPanel )
+                    
+                //}
                 System.exit(0);
             }
         });
@@ -67,6 +73,9 @@ public class MainFrame extends JFrame
         setPanel( PanelInterface.LobbyPanel );
     }
 
+    public void deleteRoom( int idx ) {
+        
+    }
     public void addRoom( String name, int idx ) {
         JButton btn = RoomCard.getRoomButton( idx );
         btn.setText( (idx+1) + " " + name );
@@ -114,17 +123,20 @@ public class MainFrame extends JFrame
         panel.printMessage( msg, color );
     }
 
+    public void addRoomList( Vector<RoomInfo> vector ) {
+        lobbyPanel.addRoomList( vector );
+    }
 
     public void addUserList( Vector<String> vector ) {
         panel.addUserList( vector );
-        
     }
     
     public void messagePopup( String title, String msg ) {
         JOptionPane.showMessageDialog( this, msg, title, JOptionPane.ERROR_MESSAGE );
     }
+    
     public String inputPopup( String title, String msg ) {
-        return JOptionPane.showInputDialog( this, msg, title );
+        return JOptionPane.showInputDialog( this, msg, title, JOptionPane.QUESTION_MESSAGE );
     }
     
     public void close() {

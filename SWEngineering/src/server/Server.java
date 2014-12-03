@@ -5,7 +5,6 @@ import java.net.Socket;
 import java.util.Scanner;
 
 import protocol.LobbyProtocol;
-import protocol.TestProtocol;
 import common.*;
 
 public class Server

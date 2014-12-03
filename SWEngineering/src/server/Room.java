@@ -1,34 +1,40 @@
 package server;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Vector;
 
 import common.Util;
 import protocol.Protocol;
 
-class Room implements ServerInterface
+public class Room implements ServerInterface
 {
     private static int TotalRoomNumber = 1;
     
     private ClientManager userList;
     private String roomName;
-    //private int roomNum;
+    private int roomNum;
     
     private boolean isInGame = false;
     
-    Room( String roomName ) {
+    Room( String roomName, int roomNum ) {
         this.roomName = roomName;
+        this.roomNum = roomNum;
         userList = new ClientManager();
         //roomNum = TotalRoomNumber++;
         
         Util.println( "Room\t\tcreate new Room : " + roomName );
     }
 
-    String getRoomName() {
+    public String getRoomName() {
         return roomName;
     }
     
-    int getSize() {
+    public int getRoomNumber() {
+        return roomNum;
+    }
+    
+    public int getSize() {
         return userList.getSize();
     }
     
@@ -73,5 +79,4 @@ class Room implements ServerInterface
     public Vector<String> getUserList() {
         return userList.getIDs();
     }
-
 }

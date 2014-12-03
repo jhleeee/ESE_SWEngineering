@@ -14,6 +14,7 @@ import client.gui.LobbyPanel;
 import client.gui.MainFrame;
 import client.gui.PanelInterface;
 import protocol.*;
+import common.RoomInfo;
 import common.Sender;
 
 class ClientReceiver extends Thread
@@ -74,9 +75,6 @@ class ClientReceiver extends Thread
                 
                 else if( p instanceof GameProtocol )
                     handleProtocol( (GameProtocol)p );
-                // test
-                else if( p instanceof TestProtocol )
-                    handleProtocol( (TestProtocol)p );
             }
         }
         catch( SocketException e ) {
@@ -116,6 +114,7 @@ class ClientReceiver extends Thread
         }
     }
     
+    @SuppressWarnings("unchecked")
     private void handleProtocol( LobbyProtocol p ) {
         switch( p.getProtocol() ) {
         case LobbyProtocol.ENTER_LOBBY:
@@ -126,7 +125,7 @@ class ClientReceiver extends Thread
         case LobbyProtocol.CREATE_ROOM:
             // 이름이 null 인 경우 방 생성
             if( p.getName() == null ) {
-                String name = frame.inputPopup( null, "방 이름을 입력해주세요" );
+                String name = frame.inputPopup( " ", "방 이름을 입력해주세요" );
                 if( name != null ) {
                     // 방 이름을 입력했다면 서버로 전송
                     p.setName( name );
@@ -167,9 +166,16 @@ class ClientReceiver extends Thread
             frame.addRoom( p.getName(), (Integer)p.getData()-1 );
             break;
             
+        case LobbyProtocol.DELETE_ROOM:
+            
+            break;
+            
+        case LobbyProtocol.ROOM_LIST:
+            frame.addRoomList( (Vector<RoomInfo>)p.getData() );
+            break;
+            
         case LobbyProtocol.USER_LIST:
             // 현재 로비에 접속 중인 사용자들의 아이디를 담은 리스트
-            @SuppressWarnings("unchecked")
             Vector<String> v = (Vector<String>) p.getData();
             // 자기 자신은 제외하고 GUI에 추가
             v.remove( id );
@@ -177,6 +183,7 @@ class ClientReceiver extends Thread
             break;
             
         case LobbyProtocol.EXIT_LOBBY:
+            System.out.println( "asd" );
             frame.removeUser( (String)p.getData() );
             break;
         }
@@ -196,20 +203,5 @@ class ClientReceiver extends Thread
         // 게임 중 필요 한 프로토콜 동작
         
         
-    }
-    
-    private void handleProtocol( TestProtocol p ) {
-        //System.out.println( "get Test Protocol" );
-        data = p.getData();
-        if( data.equals( "1" ) ) {
-            // 방 만들기 프로토콜 전송
-            Protocol pc = new LobbyProtocol( LobbyProtocol.CREATE_ROOM, "test room" );
-            sender.send( pc );
-        }
-        else if( data.equals( "2" ) ) {
-            // 방 참가 프로토콜 전송
-            Protocol pc = new LobbyProtocol( LobbyProtocol.ENTER_ROOM, "test room" );
-            sender.send( pc );
-        }
     }
 }

@@ -3,6 +3,7 @@ package server;
 import java.util.Iterator;
 import java.util.Vector;
 
+import common.RoomInfo;
 import common.Sender;
 import common.Util;
 import protocol.Protocol;
@@ -15,7 +16,7 @@ class Lobby implements ServerInterface
     
     Lobby() {
         userList = new ClientManager();
-        roomList = new RoomManager( 50 );
+        roomList = new RoomManager( 60 );
         
         Util.println( "Lobby\t\tcreate lobby" );
     }
@@ -71,6 +72,10 @@ class Lobby implements ServerInterface
         }
     }
 
+    public Vector<RoomInfo> getRoomList() {
+        return roomList.getRoomList();
+    }
+    
     @Override
     public Vector<String> getUserList() {
         return userList.getIDs();

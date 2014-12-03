@@ -10,7 +10,6 @@ import protocol.GameProtocol;
 import protocol.LobbyProtocol;
 import protocol.Protocol;
 import protocol.RoomProtocol;
-import protocol.TestProtocol;
 import common.Sender;
 import common.Util;
 
@@ -65,6 +64,7 @@ class ServerReceiver extends Thread
             lobby.addUser( this );
             server.broadcast( new LobbyProtocol( LobbyProtocol.ENTER_LOBBY, id ) );
             sender.send( new LobbyProtocol( LobbyProtocol.USER_LIST, lobby.getUserList() ));
+            sender.send( new LobbyProtocol( LobbyProtocol.ROOM_LIST, lobby.getRoomList() ));
             
             //
             //
@@ -134,7 +134,7 @@ class ServerReceiver extends Thread
         //System.out.println( "get Lobby Protocol" );
         switch( p.getProtocol() ) {
         case LobbyProtocol.ENTER_LOBBY:
-            //server.broadcast( data );
+            server.broadcast( p );
             break;
         
         case LobbyProtocol.EXIT_LOBBY:
@@ -151,7 +151,7 @@ class ServerReceiver extends Thread
                                   ChatProtocol.NOTICE, "현재 차례 당 시간제한은 ~초 입니다.\n" ));
                 break;
             }
-            Room room = new Room( (String)p.getName() );
+            Room room = new Room( (String)p.getName(), (Integer)p.getData() );
             if( lobby.addRoom( (Room)room, (Integer)p.getData() ) == false ) {
                 sender.send( new LobbyProtocol( LobbyProtocol.REJECT_CREATE_ROOM, null ) );
                 break;
@@ -162,6 +162,7 @@ class ServerReceiver extends Thread
             server.addUser( lobby.removeUser( id ) );
             p.setProtocol( LobbyProtocol.ADD_ROOM );
             lobby.broadcast( p );
+            lobby.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
             break;
         }
             
@@ -171,7 +172,13 @@ class ServerReceiver extends Thread
                                   ChatProtocol.NOTICE, id+"님이 참가하셨습니다.\n" ));
                 sender.send( new ChatProtocol(
                                   ChatProtocol.NOTICE, "현재 차례 당 시간제한은 ~초 입니다.\n" ));
+                //
+                //
+                // To do
                 // 유저리스트, 정보 전송
+                //
+                //
+                //
                 break;
             }
             Room room = lobby.getRoom( (Integer)p.getData() );
@@ -181,6 +188,9 @@ class ServerReceiver extends Thread
                     server = room;
                     server.addUser( lobby.removeUser( id ) );
                     sender.send( p );
+                    p.setProtocol( LobbyProtocol.EXIT_LOBBY );
+                    p.setData( id );
+                    lobby.broadcast( p );
                 }
                 else {
                     sender.send( new LobbyProtocol( 
@@ -191,18 +201,6 @@ class ServerReceiver extends Thread
                 sender.send( new LobbyProtocol(
                              LobbyProtocol.CREATE_ROOM, p.getData() ));
             }
-            /*
-            
-            
-            // 참가가능 확인
-            //
-            //
-            
-            server = lobby.getRoom( "test room" );
-            server.addUser( lobby.removeUser( id ) );
-            server.broadcast( new ChatProtocol( 
-                              ChatProtocol.MESSAGE, id+"님이 참가하셨습니다. " ));
-                              */
             break;
         }
     }

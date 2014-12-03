@@ -14,6 +14,7 @@ import javax.swing.ScrollPaneConstants;
 import common.Sender;
 import common.Util;
 import protocol.ChatProtocol;
+import javax.swing.JButton;
 
 public class TestRoomPanel extends JPanel implements PanelInterface
 {
@@ -22,6 +23,7 @@ public class TestRoomPanel extends JPanel implements PanelInterface
     private JTextField msg_textField;
     private JTextPane msg_textPane;
     private JTextField whisper_textField;
+    private JButton button;
     
     /**
      * Create the panel.
@@ -69,6 +71,15 @@ public class TestRoomPanel extends JPanel implements PanelInterface
         whisper_textField.setBounds(12, 169, 140, 21);
         chat_panel.add(whisper_textField);
         whisper_textField.setColumns(10);
+        
+        button = new JButton("\uB098\uAC00\uAE30");
+        button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                
+            }
+        });
+        button.setBounds(254, 435, 97, 23);
+        add(button);
     }
 
     @Override
@@ -92,6 +103,12 @@ public class TestRoomPanel extends JPanel implements PanelInterface
 
     @Override
     public void removeUser(String id) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void clear() {
         // TODO Auto-generated method stub
         
     }

@@ -14,4 +14,5 @@ public interface PanelInterface
     void addUserList( Vector<String> vector );
     void addUser( String id );
     void removeUser( String id );
+    void clear();
 }
