@@ -30,24 +30,18 @@ public class ToolBar extends JPanel
 		title.setLayout(new BorderLayout());
 		title.setPreferredSize(new Dimension(size.width-5, 60));
 		title.setOpaque(true);
-		title.setBackground(new Color(46,184,0));
+		title.setBackground(Color.WHITE);
 		
 		JLabel title1 = new JLabel("TOOL", JLabel.CENTER);
 		title1.setPreferredSize(new Dimension(size.width-5, 30));
 		title1.setFont(new Font("Courier", title1.getFont().getStyle(), 20));
 		title1.setOpaque(true);
-		title1.setBackground(new Color(46,184,0));
+		title1.setBackground(Color.WHITE);
 		JLabel title2 = new JLabel("BAR", JLabel.CENTER);
 		title2.setFont(new Font("Courier", title2.getFont().getStyle(), 20));
 		title2.setPreferredSize(new Dimension(size.width-5, 30));
 		title.add(title1, BorderLayout.NORTH);
 		title.add(title2, BorderLayout.SOUTH);
-		
-		JButton flip = new JButton("FLIP");
-		flip.setPreferredSize(new Dimension(size.width-5, 60));
-		flip.setBorder(BorderFactory.createRaisedBevelBorder());
-		flip.setBackground(Color.WHITE);
-		flip.setToolTipText("Turn Board 180 Degrees");
 		
 		JButton undo = new JButton("UNDO");
 		undo.setPreferredSize(new Dimension(size.width-5, 60));
@@ -73,13 +67,11 @@ public class ToolBar extends JPanel
 		exitButton.setBackground(Color.WHITE);
 		exitButton.setToolTipText("Exit G Chess");
 		
-		flip.setActionCommand("-20");
 		undo.setActionCommand("-21");
 		highlight.setActionCommand("-22");
 		newGameButton.setActionCommand("-10");
 		exitButton.setActionCommand("-11");
 		
-		flip.addActionListener(listener);
 		undo.addActionListener(listener);
 		highlight.addActionListener(listener);
 		newGameButton.addActionListener(listener);
@@ -132,7 +124,6 @@ public class ToolBar extends JPanel
 		five.add(exitLabel, BorderLayout.NORTH);
 		five.add(exitButton, BorderLayout.SOUTH);*/
 				
-		add(flip);
 		add(undo);
 		add(highlight);
 		add(newGameButton);

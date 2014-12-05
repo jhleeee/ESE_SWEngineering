@@ -22,7 +22,8 @@ import javax.imageio.ImageIO;
 public class Pawn extends ChessPiece
 {
 	private boolean doubleMove;
-	private Image img = null;
+	private Image img_b = null;
+	private Image img_w = null;
 	
 	public Pawn(boolean isWhite, Location loc)
 	{
@@ -40,7 +41,8 @@ public class Pawn extends ChessPiece
 		p.addPoint(5,50);
 		p.addPoint(55,50);
 		try {
-			img = ImageIO.read(new File("C:\\Users\\Á¤Çå\\Pictures\\chess-pawn-icon.png"));
+			img_b = ImageIO.read(new File("C:\\Users\\EIPS_note\\Documents\\GitHub\\ESE_SWEngineering\\Chess_Git\\pawn_black.png"));
+			img_w = ImageIO.read(new File("C:\\Users\\EIPS_note\\Documents\\GitHub\\ESE_SWEngineering\\Chess_Git\\pawn_white.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
@@ -51,7 +53,7 @@ public class Pawn extends ChessPiece
 //			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
 //			g.fillPolygon(p);
 //			g.setColor(Color.BLACK);
-			g.drawImage(img, x, 0,40,40, null);
+			g.drawImage(img_b, 3, 3,80,80, null);
 		}
 		else
 		{
@@ -59,7 +61,7 @@ public class Pawn extends ChessPiece
 //			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
 //			g.fillPolygon(p);
 //			g.setColor(Color.WHITE);
-			g.drawImage(img, x, 0,40,40, null);
+			g.drawImage(img_w, 3, 3,80,80, null);
 		}
 		//g.drawString("P", x, y);
 		//g.drawImage(img, x, y,40,40, null);

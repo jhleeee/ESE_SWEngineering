@@ -14,12 +14,18 @@ Copyright Notice
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 
 public class Bishop extends ChessPiece
 {
 	private static final long serialVersionUID = -7644829780638720717L;
-	
+	private Image bishop_b = null;
+	private Image bishop_w = null;
 	public Bishop(boolean isWhite, Location loc)
 	{
 		super(isWhite, loc);
@@ -29,21 +35,29 @@ public class Bishop extends ChessPiece
 		final int x = 20;
 		final int y = 40;
 		final int width = 40;
+		try {
+			bishop_b = ImageIO.read(new File("C:\\Users\\EIPS_note\\Documents\\GitHub\\ESE_SWEngineering\\Chess_Git\\bishop_black.png"));
+			bishop_w = ImageIO.read(new File("C:\\Users\\EIPS_note\\Documents\\GitHub\\ESE_SWEngineering\\Chess_Git\\bishop_white.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 		if(getColor())
 		{
-			g.setColor(Color.WHITE);
+			/*g.setColor(Color.WHITE);
 			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
 			g.fillRect(10, 10, width, width);
-			g.setColor(Color.BLACK);
+			g.setColor(Color.BLACK);*/
+			g.drawImage(bishop_b, 3, 3,80,80, null);
 		}
 		else
 		{
-			g.setColor(Color.BLACK);
+			/*g.setColor(Color.BLACK);
 			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
 			g.fillRect(10, 10, width, width);
-			g.setColor(Color.WHITE);
+			g.setColor(Color.WHITE);*/
+			g.drawImage(bishop_w, 3, 3,80,80, null);
 		}
-		g.drawString("B", x, y);
+		//g.drawString("B", x, y);
 	}
 	public ArrayList<Location> getMoves(BoardState board)
 	{
