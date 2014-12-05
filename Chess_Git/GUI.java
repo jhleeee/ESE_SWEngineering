@@ -37,46 +37,46 @@ public class GUI extends JFrame implements ActionListener
 	{
 		super("G Chess");
 		
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension boardSize = new Dimension(482,482);
-		Dimension pgnPanelSize = new Dimension(160,461);
-		Dimension southSize = new Dimension(712, 41);
-		Dimension statusBarSize = new Dimension(712, 27);
-		Dimension toolBarSize = new Dimension(70,482);
+		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();//현재 해상도
+		Dimension boardSize = new Dimension(700,700);//보드사이즈
+	//	Dimension pgnPanelSize = new Dimension(160,461);//히스토리창 사이트
+	//	Dimension southSize = new Dimension(712, 41); // 하단 사이즈
+	//	Dimension statusBarSize = new Dimension(782, 27);//말의 좌표창 사이즈
+		Dimension toolBarSize = new Dimension(300,700);//기능버튼 사이즈
 
 		this.runner = runner;
 		
-		isFlipped = new Flipped();
+		isFlipped = new Flipped();// false 초기화
 		
 		//"this" Main Frame***********************************************************
-		setLayout(new BorderLayout());
+		setLayout(new BorderLayout());//칸 나누는 레이아웃
 		setResizable(false);
 		//****************************************************************************
 		
-		//South Panel*****************************************************************
-		JPanel south = new JPanel();
-		south.setPreferredSize(southSize);
-		south.setLayout(new BoxLayout(south, BoxLayout.PAGE_AXIS));
-		JPanel southTop = new JPanel();
-		southTop.setOpaque(true);
-		southTop.setBackground(new Color(51,102,255));
-		JPanel southBottom = new JPanel();
-		southBottom.setOpaque(true);
-		southBottom.setBackground(new Color(51,102,255));
+		//South Panel*****************************************************************//하단부 제작
+//		JPanel south = new JPanel();
+//		south.setPreferredSize(southSize);//하단부 사이즈
+//		south.setLayout(new BoxLayout(south, BoxLayout.PAGE_AXIS));
+//		JPanel southTop = new JPanel();
+//		southTop.setOpaque(true);
+//		southTop.setBackground(new Color(51,102,0));
+//		JPanel southBottom = new JPanel();
+//		southBottom.setOpaque(true);
+//		southBottom.setBackground(new Color(51,2,255));
 		//****************************************************************************
 
 		//Status Bar******************************************************************
-		statusBar = new StatusBar(statusBarSize);
-		southBottom.add(statusBar);
+//		statusBar = new StatusBar(statusBarSize);//상태바 사이즈
+//		southBottom.add(statusBar);// 하단부바닥에 상태바 추가
 		//****************************************************************************
 		
-		south.add(southTop);
-		south.add(southBottom);
-		add(south, BorderLayout.SOUTH);
+//		south.add(southTop);//하단부에 위쪽추가
+//		south.add(southBottom);//하단부에 바닥추가
+		//add(south, BorderLayout.SOUTH);
 
 		//PGN Panel*******************************************************************		
-		pgnPanel = new PGNDisplay(pgnPanelSize);
-		add(pgnPanel,BorderLayout.WEST);
+//		pgnPanel = new PGNDisplay(pgnPanelSize);//히스토리 창 추가
+//		add(pgnPanel,BorderLayout.WEST);
 		//****************************************************************************
 
 		//Button Panel****************************************************************
@@ -86,17 +86,17 @@ public class GUI extends JFrame implements ActionListener
 
 		//Game Board******************************************************************
 		board = new ChessBoard(boardState, this, boardSize);
-		updateBoard(boardState);		
-		add(board,BorderLayout.CENTER);
+		updateBoard(boardState);	//보드 업데이트	
+		add(board,BorderLayout.CENTER);//보드 가운데추가
 		//****************************************************************************
 
 		//Menu Bar********************************************************************
-		Menu menuBar = new Menu(this);
+		Menu menuBar = new Menu(this);//상단 메뉴바 
 		setJMenuBar(menuBar);
 		//****************************************************************************
 
 		pack();
-		setLocation(screen.width/2-getSize().width/2, screen.height/2-getSize().height/2);
+		setLocation(screen.width/2-getSize().width/2, screen.height/2-getSize().height/2);// 화면 중앙에 띄우기
 		repaint();
 		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 	}
@@ -152,19 +152,19 @@ public class GUI extends JFrame implements ActionListener
 		setEnabled(true);
 		if(gameOver!=null)
 			gameOver.dispose();
-		clearPGN();
-		updateStatusBar("New Game!", true);
+		//clearPGN();
+		//updateStatusBar("New Game!", true);//게임시작을 알리는 부분
 		flipBoard();
 		flipBoard();
 	}
 	public void updatePGN(Location start, Location end)
 	{
-		pgnPanel.updatePGN(start, end, runner.getTurn());
+		//pgnPanel.updatePGN(start, end, runner.getTurn());
 	}
 	
 	public void backPGN()
 	{
-		pgnPanel.backPGN(runner.getTurn());
+		//pgnPanel.backPGN(runner.getTurn());
 	}
 	
 	public void clearPGN()
@@ -226,7 +226,7 @@ public class GUI extends JFrame implements ActionListener
 	
 	public void updateStatusBar(String output, boolean isAlert)
 	{
-		statusBar.update(output, isAlert);
+		//statusBar.update(output, isAlert);
 	}
 	
 	public void updateBoard(BoardState boardState)
@@ -234,19 +234,20 @@ public class GUI extends JFrame implements ActionListener
 		board.updateBoard(boardState);
 	}
 	
-	public void actionPerformed(ActionEvent event)
+	public void actionPerformed(ActionEvent event)//버튼클릭시 작동
 	{
-		int command = Integer.parseInt(event.getActionCommand());
-		
+		int command = Integer.parseInt(event.getActionCommand());//클릭한 버튼- 보드에서의 좌표값
 		if(command >= 0)
 		{
+			//체스보드위의 클릭이벤트 처리
 			int x = command%10;
 			int y = command/10;
 			
-			Location loc = processLocation(new Location(y,x)); 
+			Location loc = processLocation(new Location(y,x)); //LOC 좌표저장
 			runner.processOne(loc);
 		}
 		else
+			//기능버튼들의 클릭 이벤트 처리
 			runner.processTwo(command);
 	}
 }

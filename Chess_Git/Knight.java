@@ -11,10 +11,10 @@ Copyright Notice
     1. Use this code for any commercial purpose.
     2. Create any derivative works for redistribution.
 */
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.util.*;
-
-import javax.swing.ImageIcon;
 
 public class Knight extends ChessPiece
 {
@@ -44,11 +44,7 @@ public class Knight extends ChessPiece
 			g.fillRect(10, 10, width, width);
 			g.setColor(Color.WHITE);
 		}
-		//ImageIcon icon=new ImageIcon("king.jpg");
-		//Image img = icon.getImage();
-		
 		g.drawString("K", x, y);
-		//g.drawImage(img, x, y, this);
 	}
 	
 	public ArrayList<Location> getMoves(BoardState board)

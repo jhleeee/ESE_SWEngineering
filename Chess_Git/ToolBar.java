@@ -32,23 +32,11 @@ public class ToolBar extends JPanel
 		title.setOpaque(true);
 		title.setBackground(new Color(46,184,0));
 		
-		/*JLabel title1 = new JLabel("TOOL", JLabel.CENTER);
-		title1.setPreferredSize(new Dimension(size.width-5, 30));
-		title1.setFont(new Font("Courier", title1.getFont().getStyle(), 20));
-		title1.setOpaque(true);
-		title1.setBackground(new Color(46,184,0));
-		JLabel title2 = new JLabel("BAR", JLabel.CENTER);
-		title2.setFont(new Font("Courier", title2.getFont().getStyle(), 20));
-		title2.setPreferredSize(new Dimension(size.width-5, 30));
-		title.add(title1, BorderLayout.NORTH);
-		title.add(title2, BorderLayout.SOUTH);
-		*/
 		JLabel title1 = new JLabel("TOOL", JLabel.CENTER);
 		title1.setPreferredSize(new Dimension(size.width-5, 30));
 		title1.setFont(new Font("Courier", title1.getFont().getStyle(), 20));
 		title1.setOpaque(true);
-		title1.setBackground(Color.BLACK);
-		
+		title1.setBackground(new Color(46,184,0));
 		JLabel title2 = new JLabel("BAR", JLabel.CENTER);
 		title2.setFont(new Font("Courier", title2.getFont().getStyle(), 20));
 		title2.setPreferredSize(new Dimension(size.width-5, 30));
@@ -64,7 +52,7 @@ public class ToolBar extends JPanel
 		JButton undo = new JButton("UNDO");
 		undo.setPreferredSize(new Dimension(size.width-5, 60));
 		undo.setBorder(BorderFactory.createRaisedBevelBorder());
-		undo.setBackground(Color.WHITE);
+		undo.setBackground(Color.LIGHT_GRAY);
 		undo.setToolTipText("Undo Move");
 		
 		JButton highlight = new JButton("HIGHLIGHT");
@@ -76,7 +64,7 @@ public class ToolBar extends JPanel
 		JButton newGameButton = new JButton("NEW");
 		newGameButton.setPreferredSize(new Dimension(size.width-5, 60));
 		newGameButton.setBorder(BorderFactory.createRaisedBevelBorder());
-		newGameButton.setBackground(Color.WHITE);
+		newGameButton.setBackground(Color.LIGHT_GRAY);
 		newGameButton.setToolTipText("New Game");
 		
 		JButton exitButton = new JButton("EXIT");

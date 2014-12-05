@@ -35,7 +35,7 @@ public class GUIRunner implements Serializable
 	{
 		board = new BoardState();
 		gui = new GUI(board, this);
-		highlight = true;
+		highlight = true; //하이라이트 옵션 true 초기화
 		perpetualFlip=false;
 		moves = new ArrayList<Location>();
 	}
@@ -52,7 +52,7 @@ public class GUIRunner implements Serializable
 		board.resetBoardState();
 		selectedPiece = null;
 		isWhiteTurn = true;
-		board.setTurn(isWhiteTurn);
+		board.setTurn(isWhiteTurn);// 화이트 턴 설정
 		gui.updateBoard(board);
 		gui.enableSide(isWhiteTurn);
 		undoMoves = new ArrayList<Integer>();
@@ -411,7 +411,7 @@ public class GUIRunner implements Serializable
 				gui.updateBoard(board);
 				gui.enableSide(isWhiteTurn);
 				wasPieceTaken.remove(wasPieceTaken.size()-1);
-				gui.backPGN();
+				//gui.backPGN();
 				if(perpetualFlip)
 					gui.flipBoard();
 //				sounds.undo();

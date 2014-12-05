@@ -1,5 +1,4 @@
 /*
-G Chess version 1.0
 Copyright (c) 2010 Gary Menezes
 
 Copyright Notice
@@ -14,7 +13,7 @@ Copyright Notice
 import javax.swing.SwingUtilities;
 
 
-public class Game {
+public class Game {//클라이언트 실행
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

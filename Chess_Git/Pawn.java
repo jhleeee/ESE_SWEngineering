@@ -12,12 +12,17 @@ Copyright Notice
     2. Create any derivative works for redistribution.
 */
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 
 @SuppressWarnings("serial")
 public class Pawn extends ChessPiece
 {
 	private boolean doubleMove;
+	private Image img = null;
 	
 	public Pawn(boolean isWhite, Location loc)
 	{
@@ -29,25 +34,35 @@ public class Pawn extends ChessPiece
 		final int x = 20;
 		final int y = 40;
 		final int width = 40;
+		
 		Polygon p = new Polygon();
 		p.addPoint(30,0);
 		p.addPoint(5,50);
 		p.addPoint(55,50);
+		try {
+			img = ImageIO.read(new File("C:\\Users\\Á¤Çå\\Pictures\\chess-pawn-icon.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+
 		if(getColor())
 		{
-			g.setColor(Color.WHITE);
-			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
-			g.fillPolygon(p);
-			g.setColor(Color.BLACK);
+//			g.setColor(Color.WHITE);
+//			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
+//			g.fillPolygon(p);
+//			g.setColor(Color.BLACK);
+			g.drawImage(img, x, 0,40,40, null);
 		}
 		else
 		{
-			g.setColor(Color.BLACK);
-			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
-			g.fillPolygon(p);
-			g.setColor(Color.WHITE);
+//			g.setColor(Color.BLACK);
+//			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
+//			g.fillPolygon(p);
+//			g.setColor(Color.WHITE);
+			g.drawImage(img, x, 0,40,40, null);
 		}
-		g.drawString("P", x, y);
+		//g.drawString("P", x, y);
+		//g.drawImage(img, x, y,40,40, null);
 	}
 	
 	public boolean getDoubleMove()

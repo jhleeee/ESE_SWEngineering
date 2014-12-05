@@ -28,7 +28,7 @@ public class BoardState implements Serializable
 		boardState = new ChessPiece[8][8];
 		savedStates = new ArrayList<ChessPiece[][]>();
 		savedStateQueue = 0;
-		resetBoardState();
+		resetBoardState();//보드 초기화
 	}
 	
 	public ChessPiece[][] getState()

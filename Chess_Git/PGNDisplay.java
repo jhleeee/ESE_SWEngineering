@@ -31,12 +31,12 @@ public class PGNDisplay extends JPanel implements Serializable
 		setOpaque(true);
 		setBackground(new Color(51,102,255));
 		
-		JLabel pgnTitle = new JLabel("HISTORY", JLabel.CENTER);
+		JLabel pgnTitle = new JLabel("G Notation", JLabel.CENTER);
 		pgnTitle.setPreferredSize(new Dimension(size.width-5,38));
 		pgnTitle.setFont(new Font("Courier", pgnTitle.getFont().getStyle(), 20));
 		pgnTitle.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		pgnTitle.setOpaque(true);
-		pgnTitle.setBackground(Color.BLACK);
+		pgnTitle.setBackground(new Color(46,184,0));
 		
 		JLabel whiteBlack = new JLabel("  White     :     Black  ", JLabel.CENTER);
 		whiteBlack.setFont(new Font(whiteBlack.getFont().getFontName(), whiteBlack.getFont().getStyle(), 12));

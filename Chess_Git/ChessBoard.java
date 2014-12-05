@@ -23,8 +23,10 @@ public class ChessBoard extends JPanel implements Serializable
 	private boolean isFlipped;
 	transient private GUI listener;
 	private JButton[][] squares;
-	private Color white;
+	private Color cream;
+	private Color green;
 	private Color black;
+	private Color white;
 	
 	public ChessBoard(BoardState boardState, GUI listener, Dimension size)
 	{
@@ -37,11 +39,13 @@ public class ChessBoard extends JPanel implements Serializable
 		//***
 		//cream = new Color(228,219,186);
 		//green = new Color(92,192,106);
-		black = new Color(255,255,255);
-		white = new Color(0,0,0);
+//		green = new Color(51,102,255);
+//		cream = new Color(46,184,0);
+		black = new Color(100,100,100);
+		white = new Color(255,255,255);
 		
-		setOpaque(true);
-		setBackground(black);
+		setOpaque(true); //≈ı∏Ìµµ x
+		setBackground(white);
 
 		setPreferredSize(size);
 		
@@ -84,7 +88,7 @@ public class ChessBoard extends JPanel implements Serializable
 				squares[y][x] = new PaintedButton(this.boardState);
 				squares[y][x].setBorder(BorderFactory.createRaisedBevelBorder());
 				squares[y][x].setActionCommand(""+y+x);
-				squares[y][x].addMouseListener(new DynamicStatusBarUpdate(listener));
+				//squares[y][x].addMouseListener(new DynamicStatusBarUpdate(listener));
 			}
 		
 		for(int y=0; y<squares.length; y++)
