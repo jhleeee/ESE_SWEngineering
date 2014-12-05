@@ -11,16 +11,20 @@ public class DataComfirm
 {
 	 public static void main(String[] args) 
 	 {
+		 
+	 }
+	 public static boolean create(DTO dto) throws Exception 
+	{
 		 java.sql.Connection conn;
 		 Statement stmt = null;
-	     try
+		 String id = dto.getId();
+	     try 
 	     {
 	          Class.forName("com.mysql.jdbc.Driver");
 	          conn =  DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/member", "root", "1234"); //결과값을 반드시 받아야 함
-	          System.out.println("DB 연결 완료");
 	          stmt = (Statement)conn.createStatement(); // SQL문 처리용 Statement 객체생성
-	          
-	          ResultSet srs = stmt.executeQuery("select * from guest where id in (' ')");
+	                
+	          ResultSet srs = stmt.executeQuery("select * from guest where id in ('" + id + "')");
 	          printData(srs, "id","passoword", "win","lose");
 	          
 	     }
@@ -36,7 +40,10 @@ public class DataComfirm
 	     { //인코팅 맞는지 확인
 	          System.out.println("지원되지 않는 인코팅 타입");
 	     }
-	 }
+	     
+		return false;	     
+		
+	}
 	 private static void printData(ResultSet srs, String col1, String col2, String col3,String col4) throws UnsupportedEncodingException, SQLException
 	 {
 		  while(srs.next())

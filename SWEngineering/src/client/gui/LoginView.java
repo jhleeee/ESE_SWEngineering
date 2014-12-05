@@ -95,6 +95,7 @@ public class LoginView extends Frame implements ActionListener, Runnable
 			 try 
 			 {
 				 insertDAO.create(dto);  //dto를 DAO에 넘겨준다.
+				 DataComfirm.create(dto);
 			 } 
 			 catch (Exception e1) 
 			 {
