@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -14,6 +15,8 @@ import javax.swing.ScrollPaneConstants;
 import common.Sender;
 import common.Util;
 import protocol.ChatProtocol;
+import protocol.RoomProtocol;
+
 import javax.swing.JButton;
 
 public class TestRoomPanel extends JPanel implements PanelInterface
@@ -28,7 +31,7 @@ public class TestRoomPanel extends JPanel implements PanelInterface
     /**
      * Create the panel.
      */
-    public TestRoomPanel( final Sender sender ) {
+    public TestRoomPanel( final Sender sender, final MainFrame frame ) {
         setLayout(null);
         JPanel chat_panel = new JPanel();
         chat_panel.setBounds(250, 490, 737, 200);
@@ -75,7 +78,8 @@ public class TestRoomPanel extends JPanel implements PanelInterface
         button = new JButton("\uB098\uAC00\uAE30");
         button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                
+                frame.setPanel( PanelInterface.LobbyPanel );
+                sender.send( new RoomProtocol( RoomProtocol.EXIT_ROOM ) );
             }
         });
         button.setBounds(254, 435, 97, 23);
@@ -85,7 +89,7 @@ public class TestRoomPanel extends JPanel implements PanelInterface
     @Override
     public void printMessage(String msg, Color color) {
         msg_textPane.setEditable(true);
-        Util.appendToPane( msg_textPane, msg, color );
+        GuiUtil.appendToPane( msg_textPane, msg, color );
         msg_textPane.setEditable(false);
     }
 
@@ -109,8 +113,7 @@ public class TestRoomPanel extends JPanel implements PanelInterface
 
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
-        
+        msg_textPane.setText("");
     }
 
 }

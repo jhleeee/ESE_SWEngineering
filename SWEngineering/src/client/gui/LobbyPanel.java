@@ -37,6 +37,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import protocol.ChatProtocol;
+import protocol.LobbyProtocol;
 import common.RoomInfo;
 import common.Sender;
 import common.Util;
@@ -48,6 +49,7 @@ import java.util.Iterator;
 import java.util.Vector;
 
 import server.Room;
+
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.MatteBorder;
@@ -67,33 +69,50 @@ public class LobbyPanel extends JPanel implements PanelInterface
     
     private JPanel roomList_panel;
     private CardLayout cardLayout;
-    private int cardNum = 0;
     
     private Sender sender = null;
     
-    public void addRoomCard() {
-        RoomCard roomCard = new RoomCard( sender );
-        roomCard.setBackground(new Color(188, 204, 188));
-        roomList_panel.add( roomCard, Integer.toString( cardNum++ ) );
+    void setRoomStateToFull( int idx ) {
+        RoomCard.setButtonToFull( idx );
+    }
+
+    void setRoomStateToWaiting( int idx ) {
+        RoomCard.setButtonToWaiting( idx );
+    }
+
+    void setRoomStateToInGame( int idx ) {
+        RoomCard.setButtonToInGame( idx );
     }
     
-    public void removeLastRoomCard() {
+    void deleteRoom( int idx ) {
+        RoomCard.setButtonToEmpty( idx );
+    }
+    
+    void addRoomCard() {
+        RoomCard roomCard = new RoomCard( sender );
+        roomCard.setBackground(new Color(153, 204, 204));
+        roomList_panel.add( roomCard );
+    }
+    
+    void removeLastRoomCard() {
         Component[] components = roomList_panel.getComponents();
         cardLayout.removeLayoutComponent( components[ components.length ] );
-        cardNum--;
     }
     
-    public void addRoomList( Vector<RoomInfo> list ) {
-        ArrayList<JButton> btnList = RoomCard.getButtonList();
+    void addRoomList( Vector<RoomInfo> list ) {
         for( RoomInfo each : list ) {
-            String text = each.getRoomNumber() + "\n" + each.getRoomName() + "\n" + each.getUserNumber() + "/2\n";
-            if( each.isInGame() ) {
-                text = text.concat( "∞‘¿” ¡ﬂ" );
+            RoomCard.setButtonName( each.getRoomNumber(), each.getRoomName() );
+            if( each.getUserNumber() == 2 ) {
+                if( each.isInGame() ) {
+                    RoomCard.setButtonToInGame( each.getRoomNumber() );
+                }
+                else {
+                    RoomCard.setButtonToFull( each.getRoomNumber() );
+                }
             }
             else {
-                text = text.concat( "¥Î±‚ ¡ﬂ" );
+                RoomCard.setButtonToWaiting( each.getRoomNumber() );
             }
-            btnList.get( each.getRoomNumber()-1 ).setText( "<html>" + text.replaceAll("\\n", "<br>") + "</html>" );
         }
     }
     
@@ -107,10 +126,15 @@ public class LobbyPanel extends JPanel implements PanelInterface
         userList.addElement( id );
     }
     
+    public void addRoom( String name, int idx ) {
+        RoomCard.setButtonName( idx, name );
+        RoomCard.setButtonToWaiting( idx );
+    }
+    
     @Override
     public void printMessage( String msg, Color color ) {
         msg_textPane.setEditable(true);
-        Util.appendToPane( msg_textPane, msg, color );
+        GuiUtil.appendToPane( msg_textPane, msg, color );
         msg_textPane.setEditable(false);
     }
 
@@ -131,19 +155,19 @@ public class LobbyPanel extends JPanel implements PanelInterface
      * Create the panel.
      */
     public LobbyPanel( final Sender sender ) {
-        setBackground(new Color(188, 204, 188));
+        setBackground(new Color(153, 204, 204));
         this.sender = sender;
         setLayout(null);
         
         JPanel chat_panel = new JPanel();
         chat_panel.setBounds(250, 490, 737, 200);
-        chat_panel.setBackground(new Color(204, 204, 204));
+        chat_panel.setBackground(new Color(153, 204, 204));
         add(chat_panel);
         chat_panel.setLayout(null);
         
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setBounds(12, 10, 713, 149);
+        scrollPane.setBounds(0, 0, 737, 169);
         chat_panel.add(scrollPane);
         
         msg_textPane = new JTextPane();
@@ -152,7 +176,7 @@ public class LobbyPanel extends JPanel implements PanelInterface
         scrollPane.setViewportView( msg_textPane );
         
         msg_textField = new JTextField();
-        msg_textField.setBounds(164, 169, 562, 21);
+        msg_textField.setBounds(152, 179, 585, 21);
         chat_panel.add(msg_textField);
         msg_textField.setColumns(10);
         msg_textField.addActionListener( new ActionListener() {
@@ -173,13 +197,13 @@ public class LobbyPanel extends JPanel implements PanelInterface
         });
         
         whisper_textField = new JTextField();
-        whisper_textField.setBounds(12, 169, 140, 21);
+        whisper_textField.setBounds(0, 179, 140, 21);
         chat_panel.add(whisper_textField);
         whisper_textField.setColumns(10);
         
         JPanel userInfo_panel = new JPanel();
         userInfo_panel.setBorder(null);
-        userInfo_panel.setBounds(12, 551, 228, 139);
+        userInfo_panel.setBounds(12, 575, 226, 115);
         userInfo_panel.setBackground(new Color(255, 255, 255));
         add(userInfo_panel);
         userInfo_panel.setLayout(null);
@@ -199,13 +223,13 @@ public class LobbyPanel extends JPanel implements PanelInterface
         JLabel label_1 = new JLabel("\uD328");
         label_1.setFont(new Font("±º∏≤", Font.BOLD, 12));
         label_1.setHorizontalAlignment(SwingConstants.CENTER);
-        label_1.setBounds(55, 70, 40, 20);
+        label_1.setBounds(55, 64, 40, 20);
         userInfo_panel.add(label_1);
         
         JLabel label_2 = new JLabel("\uC2B9\uB960");
         label_2.setFont(new Font("±º∏≤", Font.BOLD, 12));
         label_2.setHorizontalAlignment(SwingConstants.CENTER);
-        label_2.setBounds(55, 100, 40, 20);
+        label_2.setBounds(55, 89, 40, 20);
         userInfo_panel.add(label_2);
         
         JLabel win_label = new JLabel("0");
@@ -218,13 +242,13 @@ public class LobbyPanel extends JPanel implements PanelInterface
         JLabel lose_label = new JLabel("0");
         lose_label.setFont(new Font("±º∏≤", Font.BOLD, 12));
         lose_label.setHorizontalAlignment(SwingConstants.CENTER);
-        lose_label.setBounds(107, 70, 70, 20);
+        lose_label.setBounds(107, 64, 70, 20);
         userInfo_panel.add(lose_label);
         
         JLabel rate_label = new JLabel("0");
         rate_label.setFont(new Font("±º∏≤", Font.BOLD, 12));
         rate_label.setHorizontalAlignment(SwingConstants.CENTER);
-        rate_label.setBounds(107, 100, 70, 20);
+        rate_label.setBounds(107, 89, 70, 20);
         userInfo_panel.add(rate_label);
         
         roomList_panel = new JPanel();
@@ -238,7 +262,7 @@ public class LobbyPanel extends JPanel implements PanelInterface
         JButton left_button = new JButton("\u25C0");
         left_button.setForeground(Color.DARK_GRAY);
         left_button.setFont(new Font("±º∏≤", Font.BOLD, 20));
-        left_button.setBounds(12, 490, 109, 48);
+        left_button.setBounds(12, 490, 109, 33);
         left_button.setContentAreaFilled(false);
         left_button.setOpaque( true );
         left_button.setBackground(Color.LIGHT_GRAY);
@@ -255,7 +279,7 @@ public class LobbyPanel extends JPanel implements PanelInterface
         JButton right_button = new JButton("\u25B6");
         right_button.setFont(new Font("±º∏≤", Font.BOLD, 20));
         right_button.setForeground(Color.DARK_GRAY);
-        right_button.setBounds(133, 490, 105, 48);
+        right_button.setBounds(133, 490, 105, 33);
         right_button.setContentAreaFilled(false);
         right_button.setOpaque( true );
         right_button.setBackground(Color.LIGHT_GRAY);
@@ -282,6 +306,20 @@ public class LobbyPanel extends JPanel implements PanelInterface
                         return CENTER;
                }
         });
+        
+        JButton btnNewButton = new JButton("\uB098\uAC00\uAE30");
+        btnNewButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sender.send( new ChatProtocol( ChatProtocol.QUIT, (String)null ));
+            }
+        });
+        btnNewButton.setForeground(Color.DARK_GRAY);
+        btnNewButton.setFont(new Font("±º∏≤", Font.BOLD, 12));
+        btnNewButton.setContentAreaFilled(false);
+        btnNewButton.setOpaque( true );
+        btnNewButton.setBackground(Color.LIGHT_GRAY);
+        btnNewButton.setBounds(12, 533, 226, 33);
+        add(btnNewButton);
         userList_list.addListSelectionListener(new ListSelectionListener() {
 
             @Override

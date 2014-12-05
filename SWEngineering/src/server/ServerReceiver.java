@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.SocketException;
 
+import client.gui.LobbyPanel;
 import protocol.ChatProtocol;
 import protocol.GameProtocol;
 import protocol.LobbyProtocol;
@@ -84,12 +85,18 @@ class ServerReceiver extends Thread
             }
         }
         catch( SocketException e ) {
-            // 강제종료 처리
-            //
-            //
-            //
-            
             close();
+            if( server instanceof Lobby ) {
+                server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
+                server.removeUser( id );
+            }
+            else {
+                //if( isInGame )
+                
+                // else
+                server.broadcast( new RoomProtocol( RoomProtocol.EXIT_ROOM, id ) );
+                server.removeUser( id );
+            }
         }
         catch( IOException | ClassNotFoundException e ) {
             e.printStackTrace();
@@ -122,10 +129,12 @@ class ServerReceiver extends Thread
             }
             break;
             
-            // 있어야 되나 확인
         case ChatProtocol.QUIT:
             // 종료처리
             close();
+            sender.send( p );
+            server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
+            server.removeUser( id );
             break;
         }
     }
@@ -138,19 +147,12 @@ class ServerReceiver extends Thread
             break;
         
         case LobbyProtocol.EXIT_LOBBY:
-            lobby.removeUser( id );
             server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
+            server.removeUser( id );
             break;
             
         case LobbyProtocol.CREATE_ROOM:
         {
-            if( p.getData() == null ) {
-                server.broadcast( new ChatProtocol( 
-                                  ChatProtocol.NOTICE, id+"님이 참가하셨습니다.\n" ));
-                sender.send( new ChatProtocol(
-                                  ChatProtocol.NOTICE, "현재 차례 당 시간제한은 ~초 입니다.\n" ));
-                break;
-            }
             Room room = new Room( (String)p.getName(), (Integer)p.getData() );
             if( lobby.addRoom( (Room)room, (Integer)p.getData() ) == false ) {
                 sender.send( new LobbyProtocol( LobbyProtocol.REJECT_CREATE_ROOM, null ) );
@@ -167,30 +169,15 @@ class ServerReceiver extends Thread
         }
             
         case LobbyProtocol.ENTER_ROOM:
-            if( p.getData() == null ) {
-                server.broadcast( new ChatProtocol( 
-                                  ChatProtocol.NOTICE, id+"님이 참가하셨습니다.\n" ));
-                sender.send( new ChatProtocol(
-                                  ChatProtocol.NOTICE, "현재 차례 당 시간제한은 ~초 입니다.\n" ));
-                //
-                //
-                // To do
-                // 유저리스트, 정보 전송
-                //
-                //
-                //
-                break;
-            }
             Room room = lobby.getRoom( (Integer)p.getData() );
             if( room != null ) {
                 if( room.getSize() == 1 ) {
                     userLocation = ServerInterface.IN_ROOM_GUEST;
+                    server.broadcast( new LobbyProtocol( LobbyProtocol.ROOM_STATE_FULL, p.getData() ) );
+                    server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
                     server = room;
                     server.addUser( lobby.removeUser( id ) );
                     sender.send( p );
-                    p.setProtocol( LobbyProtocol.EXIT_LOBBY );
-                    p.setData( id );
-                    lobby.broadcast( p );
                 }
                 else {
                     sender.send( new LobbyProtocol( 
@@ -208,7 +195,6 @@ class ServerReceiver extends Thread
     private void handleProtocol( RoomProtocol p ) {
         //System.out.println( "get Room Protocol" );
         switch( p.getProtocol() ) {
-        
         case RoomProtocol.START:
             
             break;
@@ -221,8 +207,39 @@ class ServerReceiver extends Thread
             
             break;
             
+        case RoomProtocol.ENTER_ROOM:
+            server.broadcast( new ChatProtocol( 
+                    ChatProtocol.NOTICE, id+"님이 참가하셨습니다.\n" ));
+            sender.send( new ChatProtocol(
+                    ChatProtocol.NOTICE, "현재 차례 당 시간제한은 ~초 입니다.\n" ));
+            /*
+             * 
+             * To do
+             * 방 정보, 유저 정보 전송
+             * 
+             * 
+             */
+            break;
+            
         case RoomProtocol.EXIT_ROOM:
+            server.removeUser( id );
+            // 방 참여 인원이 없는 경우 방 삭제
+            int roomNum = ((Room)server).getRoomNumber();
+            if( ((Room)server).getSize() == 0 ) {
+                server = lobby;
+                ((Lobby)server).deleteRoom( roomNum );
+                server.broadcast( new LobbyProtocol( LobbyProtocol.DELETE_ROOM, roomNum ) );
+            }
+            else {
+                server.broadcast( new LobbyProtocol( LobbyProtocol.ROOM_STATE_WAITING, roomNum ) );
+                //if( ((Room)server ) // 방장 위임
+            }
+            
             server = lobby;
+            server.addUser( this );
+            server.broadcast( new LobbyProtocol( LobbyProtocol.ENTER_LOBBY, id ) );
+            sender.send( new LobbyProtocol( LobbyProtocol.USER_LIST, lobby.getUserList() ) );
+            sender.send( new LobbyProtocol( LobbyProtocol.ROOM_LIST, lobby.getRoomList() ) );
             break;
         }
     }

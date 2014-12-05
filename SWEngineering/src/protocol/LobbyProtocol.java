@@ -14,10 +14,18 @@ public class LobbyProtocol implements Protocol
     public final static int ADD_ROOM = 8000;
     public final static int DELETE_ROOM = 9000;
     public final static int ROOM_LIST = 10000;
+    public final static int ROOM_STATE_FULL = 11000;
+    public final static int ROOM_STATE_IN_GAME = 12000;
+    public final static int ROOM_STATE_WAITING = 13000;
     
     private int protocol = 0;
     private Object data = null;
     private String name = null;
+    
+    public LobbyProtocol( int protocol, Object data, String name ) {
+        this.protocol = protocol;
+        this.data = data;
+    }
     
     public LobbyProtocol( int protocol, Object data ) {
         this.protocol = protocol;

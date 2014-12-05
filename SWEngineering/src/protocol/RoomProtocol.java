@@ -13,6 +13,14 @@ public class RoomProtocol implements Protocol
     private String data = null;
     private int protocol = 0;
     
+    public RoomProtocol( int protocol ) {
+        this.protocol = protocol;
+    }
+    
+    public RoomProtocol( int protocol, String data ) {
+        
+    }
+    
     public String getData() {
         return data;
     }

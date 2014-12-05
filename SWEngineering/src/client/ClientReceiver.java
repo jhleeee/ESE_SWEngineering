@@ -108,8 +108,7 @@ class ClientReceiver extends Thread
             break;
             
         case ChatProtocol.QUIT:
-            
-            
+            close();
             break;
         }
     }
@@ -118,7 +117,6 @@ class ClientReceiver extends Thread
     private void handleProtocol( LobbyProtocol p ) {
         switch( p.getProtocol() ) {
         case LobbyProtocol.ENTER_LOBBY:
-            // 유저 아이디 추가
             frame.addUser( (String)p.getData() );
             break;
             
@@ -137,11 +135,7 @@ class ClientReceiver extends Thread
                 // 방 패널로 바꾸고
                 frame.setPanel( PanelInterface.TestRoomPanel );
                 //frame.setRoomTitle();
-                // data를 null로 바꾸어 전송하여 패널이 변경되었음을 알림
-                // 서버는 이 프로토콜을 받고 방에 대한 정보를 전송함
-                // 패널이 변경된 후 방 정보를 얻어와야 데이터가 정상적으로 처리 됨
-                p.setData( null );
-                sender.send( p );
+                sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM ) );
             }
             break;
             
@@ -152,22 +146,31 @@ class ClientReceiver extends Thread
         case LobbyProtocol.ENTER_ROOM:
             frame.setPanel( PanelInterface.TestRoomPanel );
             //frame.setRoomTitle();
-            p.setData( null );
-            sender.send( p );
+            sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM ) );
             break;
             
         case LobbyProtocol.REJECT_ENTER_ROOM:
             frame.messagePopup( null, "방에 입장 할 수 없습니다" );
             break;
             
+        case LobbyProtocol.ROOM_STATE_FULL:
+            frame.setRoomStateToFull( (int)p.getData() );
+            break;
+            
+        case LobbyProtocol.ROOM_STATE_WAITING:
+            frame.setRoomStateToWaiting( (int)p.getData() );
+            break;
+            
+        case LobbyProtocol.ROOM_STATE_IN_GAME:
+            frame.setRoomStateToInGame( (int)p.getData() );
+            break;
+            
         case LobbyProtocol.ADD_ROOM:
-            // 새로운 방이 생성되었으므로 프레임에 추가
-            // 인덱스는 -1
-            frame.addRoom( p.getName(), (Integer)p.getData()-1 );
+            frame.addRoom( p.getName(), (Integer)p.getData() );
             break;
             
         case LobbyProtocol.DELETE_ROOM:
-            
+            frame.deleteRoom( (int)p.getData() );
             break;
             
         case LobbyProtocol.ROOM_LIST:
@@ -176,14 +179,13 @@ class ClientReceiver extends Thread
             
         case LobbyProtocol.USER_LIST:
             // 현재 로비에 접속 중인 사용자들의 아이디를 담은 리스트
-            Vector<String> v = (Vector<String>) p.getData();
+            Vector<String> v = (Vector<String>)p.getData();
             // 자기 자신은 제외하고 GUI에 추가
             v.remove( id );
             frame.addUserList( v );
             break;
             
         case LobbyProtocol.EXIT_LOBBY:
-            System.out.println( "asd" );
             frame.removeUser( (String)p.getData() );
             break;
         }

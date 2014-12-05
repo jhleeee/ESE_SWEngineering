@@ -30,7 +30,7 @@ public class MainFrame extends JFrame
 {
     private static final long serialVersionUID = 1L;
     
-    //static Point mouseDownCompCoords;
+    static Point mouseDownCompCoords;
     
     private Sender sender;
     private JPanel contentPane;
@@ -45,7 +45,7 @@ public class MainFrame extends JFrame
      */
     public MainFrame( final Sender sender ) {
         this.sender = sender;
-        //setUndecorated(true);
+        setUndecorated(true);
         setResizable( false );
         setTitle( "Online Chess" );
         setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -56,33 +56,65 @@ public class MainFrame extends JFrame
         setContentPane( contentPane );
         pack();
         
+        addMouseListener(new MouseListener(){
+            public void mouseReleased(MouseEvent e) {
+                mouseDownCompCoords = null;
+            }
+            public void mousePressed(MouseEvent e) {
+                mouseDownCompCoords = e.getPoint();
+            }
+            public void mouseExited(MouseEvent e) {
+            }
+            public void mouseEntered(MouseEvent e) {
+            }
+            public void mouseClicked(MouseEvent e) {
+            }
+        });
+
+        addMouseMotionListener(new MouseMotionListener(){
+            public void mouseMoved(MouseEvent e) {
+            }
+
+            public void mouseDragged(MouseEvent e) {
+                Point currCoords = e.getLocationOnScreen();
+                setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
+            }
+        });
+        
         addWindowListener(new WindowAdapter() {
             public void windowClosing( WindowEvent e ) {
-                if( panel instanceof LobbyPanel ) {
-                    sender.send( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, (String)null ));
-                }
-                //else if( panel instanceof RoomPanel )
-                    
-                //}
                 System.exit(0);
             }
         });
         
         lobbyPanel = new LobbyPanel( sender );
-        testRoomPanel = new TestRoomPanel( sender );
+        testRoomPanel = new TestRoomPanel( sender, this );
         setPanel( PanelInterface.LobbyPanel );
     }
 
-    public void deleteRoom( int idx ) {
-        
-    }
-    public void addRoom( String name, int idx ) {
-        JButton btn = RoomCard.getRoomButton( idx );
-        btn.setText( (idx+1) + " " + name );
+    public void clear() {
+        testRoomPanel.clear();
+        lobbyPanel.clear();
     }
     
-    public void setRoomState( int idx, int state ) {
-        
+    public void deleteRoom( int idx ) {
+        lobbyPanel.deleteRoom( idx );
+    }
+    
+    public void addRoom( String name, int idx ) {
+        lobbyPanel.addRoom( name, idx );
+    }
+    
+    public void setRoomStateToFull( int idx ) {
+        lobbyPanel.setRoomStateToFull( idx );
+    }
+
+    public void setRoomStateToWaiting( int idx ) {
+        lobbyPanel.setRoomStateToWaiting( idx );
+    }
+
+    public void setRoomStateToInGame( int idx ) {
+        lobbyPanel.setRoomStateToInGame( idx );
     }
     
     public void addRoomCard() {
@@ -90,6 +122,7 @@ public class MainFrame extends JFrame
     }
     
     public void setPanel( int type ) {
+        clear();
         contentPane.removeAll();
         switch( type ) {
         case PanelInterface.LobbyPanel:
@@ -108,6 +141,7 @@ public class MainFrame extends JFrame
             break;
         }
         this.pack();
+        this.repaint();
     }
     
     public void removeUser( String id ) {
@@ -118,7 +152,6 @@ public class MainFrame extends JFrame
         panel.addUser( id );
     }
     
-
     public void printMessage( String msg, Color color ) {
         panel.printMessage( msg, color );
     }

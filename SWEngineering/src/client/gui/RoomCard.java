@@ -9,6 +9,7 @@ import javax.swing.JButton;
 
 import protocol.LobbyProtocol;
 import common.Sender;
+import common.Util;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -23,38 +24,43 @@ public class RoomCard extends JPanel
     
     private int cardNum = 0;
 
-    public static void setButtonToFull( JButton btn ) {
+    static void setButtonName( int idx, String name ) {
+        JButton btn = roomButtonList.get( idx-1 );
+        btn.setText( GuiUtil.createButtonText( idx, name ) );
+    }
+    
+    static void setButtonToFull( int idx ) {
+        JButton btn = roomButtonList.get( idx-1 );
         btn.setBackground( new Color(255, 153, 102) );
     }
     
-    public static void setButtonToWaiting( JButton btn ) {
+    static void setButtonToWaiting( int idx ) {
         // 대기 중 화면으로 바꿔
-        btn.setBackground( new Color(152, 153, 240) );
+        JButton btn = roomButtonList.get( idx-1 );
+        btn.setBackground( new Color(159, 201, 60) ); 
     }
     
-    public static void setButtonToInGame( JButton btn ) {
+    static void setButtonToInGame( int idx ) {
         // 게임 중 화면
+        JButton btn = roomButtonList.get( idx-1 );
         btn.setBackground( new Color(204, 102, 102) );
     }
     
-    public static void setButtonToEmpty( JButton btn ) {
+    static void setButtonToEmpty( int idx ) {
         // 빈방으로
+        JButton btn = roomButtonList.get( idx-1 );
         btn.setBackground( new Color(204, 204, 204) );
+        btn.setText( GuiUtil.createButtonText( idx ) );
     }
     
-    public static ArrayList<JButton> getButtonList() {
+    static ArrayList<JButton> getButtonList() {
         return roomButtonList;
     }
     
-    public static JButton getRoomButton( int idx ) {
-        return roomButtonList.get( idx );
-    }
-    
-
-    public static void clear() {
-        int idx = 1;
-        for( JButton each : roomButtonList ) {
-            each.setText( idx + " Empty" );
+    static void clear() {
+        int size = roomButtonList.size();
+        for( int i=1; i<=size; ++i ) {
+            setButtonToEmpty( i );
         }
     }
     
@@ -67,7 +73,8 @@ public class RoomCard extends JPanel
         
         for( int i=1; i<=12; ++i ) {
             final int index = i;
-            JButton button = createFlatButton( (cardNum*12 + i ) + " Empty" );
+            JButton button = GuiUtil.createFlatButton( GuiUtil.createButtonText( (cardNum*12 + i ) ) );
+            button.setBackground( new Color(204, 204, 204) );
             button.addActionListener( new ActionListener() {
 
                 @Override
@@ -79,15 +86,5 @@ public class RoomCard extends JPanel
             add( button );
             roomButtonList.add( button );
         }
-    }
-
-    private JButton createFlatButton( String text ) {
-        JButton button = new JButton( text );
-        button.setBorderPainted(true);
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(false);
-        button.setOpaque( true );
-        setButtonToEmpty( button );
-        return button;
     }
 }

@@ -16,20 +16,20 @@ public class RoomManager
     // flag °í·Á
     
     RoomManager( int size ) {
-        rooms = new Room[50];
+        rooms = new Room[60];
         this.size = size;
     }
     
     synchronized boolean addRoom( Room room, int idx ) {
-        if( rooms[idx] != null )
+        if( rooms[idx-1] != null )
             return false;
         else
-            rooms[idx] = room;
+            rooms[idx-1] = room;
         return true;
     }
     
     synchronized void deleteRoom( int idx ) {
-        rooms[idx] = null;
+        rooms[idx-1] = null;
     }
     
     ServerReceiver getReceiver( String id ) {
@@ -71,7 +71,7 @@ public class RoomManager
     }
     
     Room getRoom( int idx ) {
-        return rooms[idx];
+        return rooms[idx-1];
     }
     
     
