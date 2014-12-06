@@ -14,6 +14,7 @@ Copyright Notice
 */
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 public class GUI extends JFrame implements ActionListener
@@ -34,16 +35,16 @@ public class GUI extends JFrame implements ActionListener
 	
 	private PGNDisplay pgnPanel;
 		
-	public GUI(BoardState boardState, GUIRunner runner)
+	public GUI(BoardState boardState, GUIRunner runner, JPanel board_panel)
 	{
 		super("G Chess");
 		
-		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();//현재 해상도
+//		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();//현재 해상도
 		Dimension boardSize = new Dimension(700,700);//보드사이즈
 	//	Dimension pgnPanelSize = new Dimension(160,461);//히스토리창 사이트
 	//	Dimension southSize = new Dimension(712, 41); // 하단 사이즈
 	//	Dimension statusBarSize = new Dimension(782, 27);//말의 좌표창 사이즈
-		Dimension toolBarSize = new Dimension(300,700);//기능버튼 사이즈
+//		Dimension toolBarSize = new Dimension(300,700);//기능버튼 사이즈
 
 		this.runner = runner;
 		
@@ -81,25 +82,26 @@ public class GUI extends JFrame implements ActionListener
 		//****************************************************************************
 
 		//Button Panel****************************************************************
-		ToolBar toolBar = new ToolBar(this, toolBarSize);
-		add(toolBar,BorderLayout.EAST);
+//		ToolBar toolBar = new ToolBar(this, toolBarSize);
+//		add(toolBar,BorderLayout.EAST);
 		//****************************************************************************
 
 		//Game Board******************************************************************
 		board = new ChessBoard(boardState, this, boardSize);
 		updateBoard(boardState);	//보드 업데이트	
-		add(board,BorderLayout.CENTER);//보드 가운데추가
+		board.setBounds(0, 0, 649, 680);
+		board_panel.add(board);
 		//****************************************************************************
 
 		//Menu Bar********************************************************************
-		Menu menuBar = new Menu(this);//상단 메뉴바 
-		setJMenuBar(menuBar);
+//		Menu menuBar = new Menu(this);//상단 메뉴바 
+//		setJMenuBar(menuBar);
 		//****************************************************************************
 
 		pack();
-		setLocation(screen.width/2-getSize().width/2, screen.height/2-getSize().height/2);// 화면 중앙에 띄우기
+//		setLocation(screen.width/2-getSize().width/2, screen.height/2-getSize().height/2);// 화면 중앙에 띄우기
 		repaint();
-		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+//		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 	}
 	
 	public ChessBoard getChessBoard()

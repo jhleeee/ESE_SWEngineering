@@ -1,4 +1,4 @@
-package client.gui;
+package client.gui.login;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.DriverManager;

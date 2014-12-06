@@ -19,5 +19,11 @@ public class GameProtocol implements Protocol
     public int getProtocol() {
         return protocol;
     }
+	public void setData(String data) {
+		this.data = data;
+	}
+	public void setProtocol(int protocol) {
+		this.protocol = protocol;
+	}
 
 }

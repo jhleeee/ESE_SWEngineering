@@ -11,7 +11,7 @@ import common.Util;
 
 public class Client
 {
-    private static final String serverIP = "192.168.0.8";
+    private static final String serverIP = "127.0.0.1";
     private static final int port = 7777;
     
     private Socket socket = null;

@@ -1,4 +1,4 @@
-package client.gui;
+package client.gui.login;
 import java.sql.Connection;
 import java.sql.DriverManager; 
 import com.mysql.jdbc.Statement;

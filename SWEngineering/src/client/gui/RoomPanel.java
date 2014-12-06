@@ -41,12 +41,6 @@ public class RoomPanel extends JPanel implements PanelInterface
     private JButton undo_button;
     private JButton giveup_button;
     
-    private BoardState board_state = new BoardState();
-    private GUIRunner runner = new GUIRunner();
-    private GUI gui = new GUI(board_state,runner);
-    
-    private ChessBoard board;
-
     private JLabel user1_label;
     private JLabel user2_label;
     
@@ -261,17 +255,11 @@ public class RoomPanel extends JPanel implements PanelInterface
         JPanel board_panel = new JPanel();
         board_panel.setBounds(12, 10, 649, 680);
         add(board_panel);
-        
-        Dimension boardSize = new Dimension(649,680);
-        board = new ChessBoard(board_state, gui, boardSize);
-        board.setBounds(0, 0, 649, 680);
-        updateBoard( board_state );
         board_panel.setLayout(null);
-        board_panel.add( board );
         
-    }
-    void updateBoard( BoardState boardState )
-    {
-        board.updateBoard(boardState);
+        GUIRunner run = new GUIRunner(board_panel);
+        
+		//run.setVisible();
+        
     }
 }
