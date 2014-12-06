@@ -117,10 +117,12 @@ public class LobbyPanel extends JPanel implements PanelInterface
         }
     }
     
+    @Override
     public void removeUser(String id) {
         userList.removeElement( id );
     }
     
+    @Override
     public void addUser( String id ) {
         userList.addElement( id );
     }

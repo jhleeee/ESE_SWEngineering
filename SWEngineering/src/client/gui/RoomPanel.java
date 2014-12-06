@@ -21,8 +21,10 @@ import protocol.RoomProtocol;
 import javax.swing.JButton;
 
 import client.gui.chess.*;
+
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
 import java.awt.Font;
 
 public class RoomPanel extends JPanel implements PanelInterface
@@ -44,6 +46,48 @@ public class RoomPanel extends JPanel implements PanelInterface
     private GUI gui = new GUI(board_state,runner);
     
     private ChessBoard board;
+
+    private JLabel user1_label;
+    private JLabel user2_label;
+    
+    private int userNum = 0;
+    
+    @Override
+    public void addUser(String id) {
+        if( userNum == 0 ) {
+            setUser1( id );
+            userNum++;
+        }
+        else if( userNum == 1 ) {
+            setUser2( id );
+            userNum++;
+        }
+    }
+
+    @Override
+    public void removeUser(String id) {
+        if( user1_label.getText().equals(id) ) {
+            user1_label.setText("");
+            userNum--;
+        }
+        else if( user2_label.getText().equals(id) ) {
+            user2_label.setText("");
+            userNum--;
+        }
+    }
+    
+    void switchOwner() {
+        setUser1( user2_label.getText() );
+        setUser2( "" );
+    }
+    
+    private void setUser1( String id ) {
+        user1_label.setText( id );
+    }
+    
+    private void setUser2( String id ) {
+        user2_label.setText( id );
+    }
     
     @Override
     public void printMessage(String msg, Color color) {
@@ -54,6 +98,9 @@ public class RoomPanel extends JPanel implements PanelInterface
 
     @Override
     public void clear() {
+        userNum = 0;
+        setUser1( "" );
+        setUser2( "" );
         msg_textPane.setText("");
         //
         //
@@ -77,7 +124,7 @@ public class RoomPanel extends JPanel implements PanelInterface
         //
         //
     }
-    
+
     void setButtonToReady() {
         start_ready_button.setText( "¡ÿ∫Ò«œ±‚" );
     }
@@ -185,30 +232,30 @@ public class RoomPanel extends JPanel implements PanelInterface
         giveup_button.setBounds(891, 131, 97, 40);
         add(giveup_button);
         
-        JPanel history_panel = new JPanel();
-        history_panel.setBackground(Color.WHITE);
-        history_panel.setBounds(673, 10, 315, 110);
-        add(history_panel);
+        JPanel user_panel = new JPanel();
+        user_panel.setBackground(Color.WHITE);
+        user_panel.setBounds(673, 10, 315, 110);
+        add(user_panel);
         
-        history_panel.setLayout(null);
+        user_panel.setLayout(null);
         
         JLabel lblVs = new JLabel("VS");
         lblVs.setFont(new Font("±º∏≤", Font.BOLD, 15));
         lblVs.setHorizontalAlignment(SwingConstants.CENTER);
         lblVs.setBounds(123, 42, 57, 25);
-        history_panel.add(lblVs);
+        user_panel.add(lblVs);
         
-        JLabel lblNewLabel = new JLabel("New label");
-        lblNewLabel.setFont(new Font("±º∏≤", Font.PLAIN, 14));
-        lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        lblNewLabel.setBounds(12, 17, 291, 25);
-        history_panel.add(lblNewLabel);
+        user1_label = new JLabel("");
+        user1_label.setFont(new Font("±º∏≤", Font.PLAIN, 14));
+        user1_label.setHorizontalAlignment(SwingConstants.LEFT);
+        user1_label.setBounds(12, 17, 291, 25);
+        user_panel.add(user1_label);
         
-        JLabel label = new JLabel("New label");
-        label.setFont(new Font("±º∏≤", Font.PLAIN, 14));
-        label.setHorizontalAlignment(SwingConstants.RIGHT);
-        label.setBounds(12, 67, 291, 25);
-        history_panel.add(label);
+        user2_label = new JLabel("");
+        user2_label.setFont(new Font("±º∏≤", Font.PLAIN, 14));
+        user2_label.setHorizontalAlignment(SwingConstants.RIGHT);
+        user2_label.setBounds(12, 67, 291, 25);
+        user_panel.add(user2_label);
         
         
         JPanel board_panel = new JPanel();
@@ -223,7 +270,7 @@ public class RoomPanel extends JPanel implements PanelInterface
         board_panel.add( board );
         
     }
-    private void updateBoard( BoardState boardState )
+    void updateBoard( BoardState boardState )
     {
         board.updateBoard(boardState);
     }

@@ -182,6 +182,7 @@ class ServerReceiver extends Thread
             p.setProtocol( LobbyProtocol.ADD_ROOM );
             lobby.broadcast( p );
             lobby.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
+            ((Room)server).setOwner( id );
             break;
         }
             
@@ -228,14 +229,11 @@ class ServerReceiver extends Thread
             server.broadcast( new ChatProtocol( 
                     ChatProtocol.NOTICE, id+"님이 참가하셨습니다.\n" ));
             sender.send( new ChatProtocol(
-                    ChatProtocol.NOTICE, "현재 차례 당 시간제한은 ~초 입니다.\n" ));
-            /*
-             * 
-             * To do
-             * 방 정보, 유저 정보 전송
-             * 
-             * 
-             */
+                    ChatProtocol.NOTICE, "현재 차례 당 시간제한은 "+((Room)server).getTurnTime()+"초 입니다.\n" ));
+            if( ((Room)server).getSize() == 2 ) {
+                sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM, ((Room)server).getOwner() ));
+            }
+            server.broadcast( p );
             break;
             
         case RoomProtocol.EXIT_ROOM:
@@ -288,6 +286,7 @@ class ServerReceiver extends Thread
             
         case RoomProtocol.OWNER:
             isOwner = true;
+            ((Room)server).setOwner( id );
             break;
         }
         

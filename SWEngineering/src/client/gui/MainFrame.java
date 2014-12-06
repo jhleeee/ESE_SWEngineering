@@ -76,7 +76,8 @@ public class MainFrame extends JFrame
 
             public void mouseDragged(MouseEvent e) {
                 Point currCoords = e.getLocationOnScreen();
-                setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
+                if( currCoords != null );
+                    setLocation(currCoords.x - mouseDownCompCoords.x, currCoords.y - mouseDownCompCoords.y);
             }
         });
         
@@ -96,8 +97,20 @@ public class MainFrame extends JFrame
         lobbyPanel.clear();
     }
     
+    public void switchOwner() {
+        roomPanel.switchOwner();
+    }
+    
     public void deleteRoom( int idx ) {
         lobbyPanel.deleteRoom( idx );
+    }
+    
+    public void setButtonToStart() {
+        roomPanel.setButtonToStart();
+    }
+    
+    public void setButtonToReady() {
+        roomPanel.setButtonToReady();
     }
     
     public void addRoom( String name, int idx ) {
@@ -141,11 +154,11 @@ public class MainFrame extends JFrame
     }
     
     public void removeUser( String id ) {
-        lobbyPanel.removeUser( id );
+        panel.removeUser( id );
     }
 
     public void addUser( String id ) {
-        lobbyPanel.addUser( id );
+        panel.addUser( id );
     }
     
     public void printMessage( String msg, Color color ) {

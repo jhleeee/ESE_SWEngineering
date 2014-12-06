@@ -131,8 +131,9 @@ class ClientReceiver extends Thread
             else {
                 // 방 패널로 바꾸고
                 frame.setPanel( PanelInterface.RoomPanel );
+                frame.setButtonToStart();
                 //frame.setRoomTitle();
-                sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM ) );
+                sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM, id ) );
             }
             break;
             
@@ -143,7 +144,8 @@ class ClientReceiver extends Thread
         case LobbyProtocol.ENTER_ROOM:
             frame.setPanel( PanelInterface.RoomPanel );
             //frame.setRoomTitle();
-            sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM ) );
+            frame.setButtonToReady();
+            sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM, id ) );
             break;
             
         case LobbyProtocol.REJECT_ENTER_ROOM:
@@ -217,18 +219,20 @@ class ClientReceiver extends Thread
             
         case RoomProtocol.EXIT_ROOM:
             // 방에서 사람 나감
-            // 유저 정보 처리
+            frame.removeUser( (String)p.getData() );
             frame.printMessage( p.getData()+"님이 나가셨습니다.\n", Color.BLUE );
             break;
             
         case RoomProtocol.OWNER:
+            frame.switchOwner();
             frame.printMessage( "당신이 방장입니다.\n", Color.BLUE );
+            frame.setButtonToStart();
             sender.send( p );
-            //
-            //
-            // 방장이 됬으니 준비->시작버튼으로 변경
-            //
-            //
+            break;
+            
+        case RoomProtocol.ENTER_ROOM:
+            System.out.println( p.getData() );
+            frame.addUser( (String)p.getData() );
             break;
         }
         

@@ -15,6 +15,8 @@ public class Room implements ServerInterface
     private String roomName;
     private int roomNum;
     
+    private String owner = null;
+    private int turnTime = 60;
     private boolean isInGame = false;
     
     Room( String roomName, int roomNum ) {
@@ -26,6 +28,22 @@ public class Room implements ServerInterface
         Util.println( "Room\t\tcreate new Room : " + roomName );
     }
 
+    public String getOwner() {
+        return owner;
+    }
+    
+    public void setOwner( String id ) {
+        owner = id;
+    }
+    
+    public void setTurnTime( int time ) {
+        turnTime = time;
+    }
+    
+    public int getTurnTime() {
+        return turnTime;
+    }
+    
     public String getRoomName() {
         return roomName;
     }
