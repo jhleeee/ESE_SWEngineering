@@ -14,12 +14,18 @@ Copyright Notice
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 
 public class Queen extends ChessPiece
 {
 	private static final long serialVersionUID = 716804568379608862L;
-	
+	private Image queen_b = null;
+	private Image queen_w = null;
 	public Queen(boolean isWhite, Location loc)
 	{
 		super(isWhite, loc);
@@ -30,21 +36,30 @@ public class Queen extends ChessPiece
 		final int x = 20;
 		final int y = 40;
 		final int width = 40;
+		try {
+			queen_b = ImageIO.read(new File("C:\\Users\\EIPS_note\\Documents\\GitHub\\ESE_SWEngineering\\Chess_Git\\queen_black.png"));
+			queen_w = ImageIO.read(new File("C:\\Users\\EIPS_note\\Documents\\GitHub\\ESE_SWEngineering\\Chess_Git\\queen_white.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 		if(getColor())
 		{
-			g.setColor(Color.WHITE);
+			/*g.setColor(Color.WHITE);
 			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
 			g.fillOval(10, 10, width, width);
-			g.setColor(Color.BLACK);
+			g.setColor(Color.BLACK);*/
+			g.drawImage(queen_b, 3, 3,80,80, null);
 		}
 		else
 		{
-			g.setColor(Color.BLACK);
+			/*g.setColor(Color.BLACK);
 			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
 			g.fillOval(10, 10, width, width);
-			g.setColor(Color.WHITE);
+			g.setColor(Color.WHITE);*/
+			g.drawImage(queen_w, 3, 3,80,80, null);
+			
 		}
-		g.drawString("Q", x, y);
+		//g.drawString("Q", x, y);
 	}
 	
 	public ArrayList<Location> getMoves(BoardState board)
