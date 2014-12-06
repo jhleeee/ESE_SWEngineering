@@ -18,8 +18,6 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import javax.swing.JPanel;
-
 public class GUIRunner implements Serializable
 {
 	private static final long serialVersionUID = -5502586734068739286L;
@@ -34,10 +32,10 @@ public class GUIRunner implements Serializable
 	private ArrayList<Integer> wasPieceTaken;
 	private ArrayList<Location> moves;
 	
-	public GUIRunner(JPanel board_panel)
+	public GUIRunner()
 	{
 		board = new BoardState();
-		gui = new GUI(board, this, board_panel);
+		gui = new GUI(board, this);
 		highlight = true; //하이라이트 옵션 true 초기화
 		perpetualFlip=false;
 		moves = new ArrayList<Location>();
@@ -374,6 +372,7 @@ public class GUIRunner implements Serializable
 	        {
 	            e.printStackTrace();
 	        }
+			gui.dispose();
 		}
 		else if(command==-13)
 		{
