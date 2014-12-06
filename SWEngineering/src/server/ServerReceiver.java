@@ -26,6 +26,7 @@ class ServerReceiver extends Thread
     private ServerInterface server = null; 
     
     private int userLocation = 0;
+    private boolean isOwner = false;
     
     ServerReceiver( Socket socket, Lobby lobby ) throws IOException{
         sender = new Sender( socket );
@@ -92,10 +93,25 @@ class ServerReceiver extends Thread
             }
             else {
                 //if( isInGame )
-                
+                // 기권처리
                 // else
-                server.broadcast( new RoomProtocol( RoomProtocol.EXIT_ROOM, id ) );
                 server.removeUser( id );
+                server.broadcast( new RoomProtocol( RoomProtocol.EXIT_ROOM, id ) );
+                if( isOwner ) {
+                    ((Room)server).getReceivers().next().getSender().send( new RoomProtocol( RoomProtocol.OWNER ) );
+                    isOwner = false;
+                }
+                // 방 참여 인원이 없는 경우 방 삭제
+                int roomNum = ((Room)server).getRoomNumber();
+                if( ((Room)server).getSize() == 0 ) {
+                    server = lobby;
+                    ((Lobby)server).deleteRoom( roomNum );
+                    server.broadcast( new LobbyProtocol( LobbyProtocol.DELETE_ROOM, roomNum ) );
+                }
+                else {
+                    server = lobby;
+                    server.broadcast( new LobbyProtocol( LobbyProtocol.ROOM_STATE_WAITING, roomNum ) );
+                }
             }
         }
         catch( IOException | ClassNotFoundException e ) {
@@ -158,7 +174,8 @@ class ServerReceiver extends Thread
                 sender.send( new LobbyProtocol( LobbyProtocol.REJECT_CREATE_ROOM, null ) );
                 break;
             }
-            userLocation = ServerInterface.IN_ROOM_OWNER;
+            userLocation = (Integer)p.getData();
+            isOwner = true;
             server = room;
             sender.send( p );
             server.addUser( lobby.removeUser( id ) );
@@ -172,7 +189,7 @@ class ServerReceiver extends Thread
             Room room = lobby.getRoom( (Integer)p.getData() );
             if( room != null ) {
                 if( room.getSize() == 1 ) {
-                    userLocation = ServerInterface.IN_ROOM_GUEST;
+                    userLocation = (Integer)p.getData();
                     server.broadcast( new LobbyProtocol( LobbyProtocol.ROOM_STATE_FULL, p.getData() ) );
                     server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
                     server = room;
@@ -223,6 +240,7 @@ class ServerReceiver extends Thread
             
         case RoomProtocol.EXIT_ROOM:
             server.removeUser( id );
+            server.broadcast( new RoomProtocol( RoomProtocol.EXIT_ROOM, id ) );
             // 방 참여 인원이 없는 경우 방 삭제
             int roomNum = ((Room)server).getRoomNumber();
             if( ((Room)server).getSize() == 0 ) {
@@ -231,17 +249,50 @@ class ServerReceiver extends Thread
                 server.broadcast( new LobbyProtocol( LobbyProtocol.DELETE_ROOM, roomNum ) );
             }
             else {
+                if( isOwner ) {
+                    ((Room)server).getReceivers().next().getSender().send( new RoomProtocol( RoomProtocol.OWNER ) );
+                    isOwner = false;
+                }
+                server = lobby;
                 server.broadcast( new LobbyProtocol( LobbyProtocol.ROOM_STATE_WAITING, roomNum ) );
-                //if( ((Room)server ) // 방장 위임
             }
             
-            server = lobby;
+            userLocation = ServerInterface.LOBBY;
             server.addUser( this );
             server.broadcast( new LobbyProtocol( LobbyProtocol.ENTER_LOBBY, id ) );
             sender.send( new LobbyProtocol( LobbyProtocol.USER_LIST, lobby.getUserList() ) );
             sender.send( new LobbyProtocol( LobbyProtocol.ROOM_LIST, lobby.getRoomList() ) );
             break;
+            
+        case RoomProtocol.REQUEST_INVITATION_USER_LIST:
+            if( lobby.getRoom( userLocation ).getSize() != 2 ) {
+                sender.send( new RoomProtocol( RoomProtocol.INVITATION_USER_LIST, lobby.getUserList() ) );
+            }
+            else {
+                sender.send( new RoomProtocol( RoomProtocol.REJECT_REQUEST_INVITATION_USER_LIST ) );
+            }
+            break;
+            
+        case RoomProtocol.INVITE:
+            Sender s = lobby.getSender( (String)p.getData() );
+            if( s == null ) {
+                sender.send( new RoomProtocol( RoomProtocol.REJECT_INVITATION ));
+            }
+            else if( !lobby.isInLobby( (String)p.getData() ) ) {
+                sender.send( new RoomProtocol( RoomProtocol.REJECT_INVITATION ));
+            }
+            else {
+                s.send( new RoomProtocol( RoomProtocol.INVITE, p.getData(), userLocation ) );
+            }
+            break;
+            
+        case RoomProtocol.OWNER:
+            isOwner = true;
+            break;
         }
+        
+        
+            
     }
     
     private void handleProtocol( GameProtocol p ) {

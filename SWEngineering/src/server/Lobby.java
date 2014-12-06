@@ -46,6 +46,13 @@ class Lobby implements ServerInterface
         return null;
     }
     
+    public boolean isInLobby( String id ) {
+        if( userList.getReceiver( id ) == null ) {
+            return false;
+        }
+        return true;
+    }
+    
     @Override
     public void addUser( ServerReceiver r ) {
         Util.println( "Lobby\t\tadd user\t\t\t\t"+r.getInfo() );

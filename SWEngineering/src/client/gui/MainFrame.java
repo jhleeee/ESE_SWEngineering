@@ -15,7 +15,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.concurrent.Delayed;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -31,7 +30,7 @@ public class MainFrame extends JFrame
 {
     private static final long serialVersionUID = 1L;
     
-    static Point mouseDownCompCoords;
+    private static Point mouseDownCompCoords;
     
     private Sender sender;
     private JPanel contentPane;
@@ -90,8 +89,7 @@ public class MainFrame extends JFrame
         
         lobbyPanel = new LobbyPanel( sender );
         testRoomPanel = new TestRoomPanel( sender, this );
-        //setPanel( PanelInterface.LobbyPanel );
-        setPanel(PanelInterface.LobbyPanel);
+        setPanel( PanelInterface.LobbyPanel );
     }
 
     public void clear() {
@@ -172,6 +170,18 @@ public class MainFrame extends JFrame
     
     public String inputPopup( String title, String msg ) {
         return JOptionPane.showInputDialog( this, msg, title, JOptionPane.QUESTION_MESSAGE );
+    }
+    
+    public boolean confirmPopup( String title, String msg ) {
+        if (JOptionPane.showConfirmDialog( this, msg, title, JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public void inviteList( Vector<String> list ) {
+        new UserListFrame( getX()+100, getY()+100, list, sender );
     }
     
     public void close() {

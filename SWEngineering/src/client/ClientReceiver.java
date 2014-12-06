@@ -23,12 +23,9 @@ class ClientReceiver extends Thread
     private ObjectInputStream in = null;
     
     private String id = null;
-    private int protocol = 0;
-    private String data = null;
     
     MainFrame frame = null;
     // 변수 필요하면 생성
-    
     
     ClientReceiver( Socket socket ) throws IOException {
         sender = new Sender( socket );
@@ -191,10 +188,51 @@ class ClientReceiver extends Thread
         }
     }
     
+    @SuppressWarnings("unchecked")
     private void handleProtocol( RoomProtocol p ) {
         //System.out.println( "get Room Protocol" );
         // 클라이언트 동작
         // 방에서 게임 전에 가능한 것, 준비, 준비취소, 시작 등
+        switch( p.getProtocol() ) {
+        case RoomProtocol.INVITATION_USER_LIST:
+            frame.inviteList((Vector<String>) p.getData());
+            break;
+            
+        case RoomProtocol.REJECT_INVITATION:
+            frame.messagePopup( null, "해당 유저를 초대할 수 없습니다" );
+            break;
+            
+        case RoomProtocol.REJECT_REQUEST_INVITATION_USER_LIST:
+            frame.messagePopup( null, "초대할 수 없습니다" );
+            break;
+            
+        case RoomProtocol.INVITE:
+            if( frame.confirmPopup( null, p.getData() + "님이 " + p.getNumber() + "번 방에서 초대하셨습니다" ) ) {
+                sender.send( new LobbyProtocol( LobbyProtocol.ENTER_ROOM, p.getNumber() ));
+            }
+            else {
+                
+            }
+            break;  
+            
+        case RoomProtocol.EXIT_ROOM:
+            // 방에서 사람 나감
+            // 유저 정보 처리
+            frame.printMessage( p.getData()+"님이 나가셨습니다.\n", Color.BLUE );
+            break;
+            
+        case RoomProtocol.OWNER:
+            frame.printMessage( "당신이 방장입니다.\n", Color.BLUE );
+            sender.send( p );
+            //
+            //
+            // 방장이 됬으니 준비->시작버튼으로 변경
+            //
+            //
+            break;
+        }
+        
+       
         
         
     }

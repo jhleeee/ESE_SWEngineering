@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JInternalFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.ListSelectionModel;
 import javax.swing.Timer;
 
 import java.awt.BorderLayout;
@@ -299,6 +300,7 @@ public class LobbyPanel extends JPanel implements PanelInterface
         
         userList = new DefaultListModel<String>();
         final JList<String> userList_list = new JList<String>(userList);
+        userList_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         scrollPane_1.setViewportView(userList_list);
         userList_list.setCellRenderer(new DefaultListCellRenderer(){
             private static final long serialVersionUID = 1L;
