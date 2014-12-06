@@ -41,54 +41,6 @@ public class RoomPanel extends JPanel implements PanelInterface
     private JButton undo_button;
     private JButton giveup_button;
     
-    private BoardState board_state = new BoardState();
-    private GUIRunner runner = new GUIRunner();
-    private GUI gui = new GUI(board_state,runner);
-    
-    private ChessBoard board;
-
-    private JLabel user1_label;
-    private JLabel user2_label;
-    
-    private int userNum = 0;
-    
-    @Override
-    public void addUser(String id) {
-        if( userNum == 0 ) {
-            setUser1( id );
-            userNum++;
-        }
-        else if( userNum == 1 ) {
-            setUser2( id );
-            userNum++;
-        }
-    }
-
-    @Override
-    public void removeUser(String id) {
-        if( user1_label.getText().equals(id) ) {
-            user1_label.setText("");
-            userNum--;
-        }
-        else if( user2_label.getText().equals(id) ) {
-            user2_label.setText("");
-            userNum--;
-        }
-    }
-    
-    void switchOwner() {
-        setUser1( user2_label.getText() );
-        setUser2( "" );
-    }
-    
-    private void setUser1( String id ) {
-        user1_label.setText( id );
-    }
-    
-    private void setUser2( String id ) {
-        user2_label.setText( id );
-    }
-    
     @Override
     public void printMessage(String msg, Color color) {
         msg_textPane.setEditable(true);
@@ -98,9 +50,6 @@ public class RoomPanel extends JPanel implements PanelInterface
 
     @Override
     public void clear() {
-        userNum = 0;
-        setUser1( "" );
-        setUser2( "" );
         msg_textPane.setText("");
         //
         //
@@ -124,7 +73,7 @@ public class RoomPanel extends JPanel implements PanelInterface
         //
         //
     }
-
+    
     void setButtonToReady() {
         start_ready_button.setText( "¡ÿ∫Ò«œ±‚" );
     }
@@ -211,6 +160,8 @@ public class RoomPanel extends JPanel implements PanelInterface
         start_ready_button = GuiUtil.createFlatButton("Ω√¿€«œ±‚");
         start_ready_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	System.out.println("∞◊Ω√¿€????");
+            	//run.setVisible();
             }
         });
         start_ready_button.setBounds(673, 131, 97, 40);
@@ -232,46 +183,41 @@ public class RoomPanel extends JPanel implements PanelInterface
         giveup_button.setBounds(891, 131, 97, 40);
         add(giveup_button);
         
-        JPanel user_panel = new JPanel();
-        user_panel.setBackground(Color.WHITE);
-        user_panel.setBounds(673, 10, 315, 110);
-        add(user_panel);
+        JPanel history_panel = new JPanel();
+        history_panel.setBackground(Color.WHITE);
+        history_panel.setBounds(673, 10, 315, 110);
+        add(history_panel);
         
-        user_panel.setLayout(null);
+        history_panel.setLayout(null);
         
         JLabel lblVs = new JLabel("VS");
         lblVs.setFont(new Font("±º∏≤", Font.BOLD, 15));
         lblVs.setHorizontalAlignment(SwingConstants.CENTER);
         lblVs.setBounds(123, 42, 57, 25);
-        user_panel.add(lblVs);
+        history_panel.add(lblVs);
         
-        user1_label = new JLabel("");
-        user1_label.setFont(new Font("±º∏≤", Font.PLAIN, 14));
-        user1_label.setHorizontalAlignment(SwingConstants.LEFT);
-        user1_label.setBounds(12, 17, 291, 25);
-        user_panel.add(user1_label);
+        JLabel lblNewLabel = new JLabel("New label");
+        lblNewLabel.setFont(new Font("±º∏≤", Font.PLAIN, 14));
+        lblNewLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        lblNewLabel.setBounds(12, 17, 291, 25);
+        history_panel.add(lblNewLabel);
         
-        user2_label = new JLabel("");
-        user2_label.setFont(new Font("±º∏≤", Font.PLAIN, 14));
-        user2_label.setHorizontalAlignment(SwingConstants.RIGHT);
-        user2_label.setBounds(12, 67, 291, 25);
-        user_panel.add(user2_label);
+        JLabel label = new JLabel("New label");
+        label.setFont(new Font("±º∏≤", Font.PLAIN, 14));
+        label.setHorizontalAlignment(SwingConstants.RIGHT);
+        label.setBounds(12, 67, 291, 25);
+        history_panel.add(label);
         
         
         JPanel board_panel = new JPanel();
         board_panel.setBounds(12, 10, 649, 680);
         add(board_panel);
-        
-        Dimension boardSize = new Dimension(649,680);
-        board = new ChessBoard(board_state, gui, boardSize);
-        board.setBounds(0, 0, 649, 680);
-        updateBoard( board_state );
         board_panel.setLayout(null);
-        board_panel.add( board );
         
+        GUIRunner run = new GUIRunner(board_panel);
+        
+		//run.setVisible();
+		
     }
-    void updateBoard( BoardState boardState )
-    {
-        board.updateBoard(boardState);
-    }
+
 }
