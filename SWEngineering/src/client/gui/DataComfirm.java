@@ -1,4 +1,4 @@
-package test;
+package client.gui;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.DriverManager;
@@ -7,17 +7,18 @@ import java.sql.SQLException;
 
 import com.mysql.jdbc.Statement;
 
-public class DataComfirm 
+public class DataComfirm
 {
 	 public static void main(String[] args) 
 	 {
 		 
 	 }
 	 public static boolean create(DTO dto) throws Exception 
-	{
+	 {
 		 java.sql.Connection conn;
 		 Statement stmt = null;
 		 String id = dto.getId();
+		
 	     try 
 	     {
 	          Class.forName("com.mysql.jdbc.Driver");
@@ -41,32 +42,36 @@ public class DataComfirm
 	          System.out.println("지원되지 않는 인코팅 타입");
 	     }
 	     
-		return false;	     
+		 return false;	     
 		
-	}
+	 }
 	 private static void printData(ResultSet srs, String col1, String col2, String col3,String col4) throws UnsupportedEncodingException, SQLException
 	 {
-		  while(srs.next())
-		  {
+		 String idstr;
+		 String passwordstr;
+		 String winstr;
+		 String losestr;
+		 while(srs.next())
+		 {
 			  //다음으로 갈수 있으면 true, 아니면 false 
-			   if(!col1.equals(""))
-			   {
-			    System.out.print(new String(srs.getString("id").getBytes("ISO-8859-1")));//한글 코드 변환
-			   }
+			  if(!col1.equals(""))
+			  {
+				  idstr = new String(srs.getString("id").getBytes("ISO-8859-1"));//한글 코드 변환
+			  }
 			   
-			   if(!col2.equals(""))
-			   {
-			    System.out.print("\t|\t"+new String(srs.getString("password").getBytes("ISO-8859-1")));
-			   }
+			  if(!col2.equals(""))
+			  {
+				  passwordstr = new String(srs.getString("password").getBytes("ISO-8859-1"));
+			  }
 			   
-			   if(!col3.equals(""))
-			   {
-			    System.out.print("\t|\t"+new String(srs.getString("win")));
-			   }
-			   if(!col3.equals(""))
-			   {
-				    System.out.println("\t|\t"+new String(srs.getString("lose")));
-			   }
-		  }
-	}		 
+			  if(!col3.equals(""))
+			  {
+				  winstr = new String(srs.getString("win"));
+			  }
+			  if(!col3.equals(""))
+			  {
+			          losestr = new String(srs.getString("lose"));
+			  }
+		 }
+	 }		 
 }
