@@ -1,4 +1,4 @@
-package client.gui;
+package client.gui.chess;
 
 import java.awt.*;
 import javax.swing.*;

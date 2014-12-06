@@ -97,10 +97,6 @@ class ServerReceiver extends Thread
                 // else
                 server.removeUser( id );
                 server.broadcast( new RoomProtocol( RoomProtocol.EXIT_ROOM, id ) );
-                if( isOwner ) {
-                    ((Room)server).getReceivers().next().getSender().send( new RoomProtocol( RoomProtocol.OWNER ) );
-                    isOwner = false;
-                }
                 // 방 참여 인원이 없는 경우 방 삭제
                 int roomNum = ((Room)server).getRoomNumber();
                 if( ((Room)server).getSize() == 0 ) {
@@ -109,6 +105,10 @@ class ServerReceiver extends Thread
                     server.broadcast( new LobbyProtocol( LobbyProtocol.DELETE_ROOM, roomNum ) );
                 }
                 else {
+                    if( isOwner ) {
+                        ((Room)server).getReceivers().next().getSender().send( new RoomProtocol( RoomProtocol.OWNER ) );
+                        isOwner = false;
+                    }
                     server = lobby;
                     server.broadcast( new LobbyProtocol( LobbyProtocol.ROOM_STATE_WAITING, roomNum ) );
                 }

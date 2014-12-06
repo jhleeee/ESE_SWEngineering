@@ -36,8 +36,7 @@ public class MainFrame extends JFrame
     private JPanel contentPane;
     
     private LobbyPanel lobbyPanel;
-    //private RoomPanel roomPanel;
-    private TestRoomPanel testRoomPanel;
+    private RoomPanel roomPanel;
     private PanelInterface panel;
 
     /**
@@ -88,12 +87,12 @@ public class MainFrame extends JFrame
         });
         
         lobbyPanel = new LobbyPanel( sender );
-        testRoomPanel = new TestRoomPanel( sender, this );
+        roomPanel = new RoomPanel( sender, this );
         setPanel( PanelInterface.LobbyPanel );
     }
 
     public void clear() {
-        testRoomPanel.clear();
+        roomPanel.clear();
         lobbyPanel.clear();
     }
     
@@ -132,12 +131,9 @@ public class MainFrame extends JFrame
             break;
             
         case PanelInterface.RoomPanel:
-            break;
-            
-        case PanelInterface.TestRoomPanel:
-            contentPane.add( testRoomPanel );
-            testRoomPanel.setVisible( true );
-            panel = ( PanelInterface )testRoomPanel;
+            contentPane.add( roomPanel );
+            roomPanel.setVisible( true );
+            panel = ( PanelInterface )roomPanel;
             break;
         }
         this.pack();
@@ -145,11 +141,11 @@ public class MainFrame extends JFrame
     }
     
     public void removeUser( String id ) {
-        panel.removeUser( id );
+        lobbyPanel.removeUser( id );
     }
 
     public void addUser( String id ) {
-        panel.addUser( id );
+        lobbyPanel.addUser( id );
     }
     
     public void printMessage( String msg, Color color ) {
@@ -161,7 +157,7 @@ public class MainFrame extends JFrame
     }
 
     public void addUserList( Vector<String> vector ) {
-        panel.addUserList( vector );
+        lobbyPanel.addUserList( vector );
     }
     
     public void messagePopup( String title, String msg ) {
@@ -181,7 +177,7 @@ public class MainFrame extends JFrame
     }
     
     public void inviteList( Vector<String> list ) {
-        new UserListFrame( getX()+100, getY()+100, list, sender );
+        new UserListFrame( getX()+400, getY()+100, list, sender );
     }
     
     public void close() {

@@ -1,5 +1,4 @@
-package client.gui;
-
+package client.gui.chess;
 /*
 G Chess version 1.0
 Copyright (c) 2010 Gary Menezes
@@ -23,23 +22,27 @@ import java.util.*;
 
 import javax.imageio.ImageIO;
 
-public class Bishop extends ChessPiece
+public class Rook extends ChessPiece
 {
-	private static final long serialVersionUID = -7644829780638720717L;
-	private Image bishop_b = null;
-	private Image bishop_w = null;
-	public Bishop(boolean isWhite, Location loc)
+	private static final long serialVersionUID = 3819757220079709631L;
+	private boolean hasMoved;
+	private Image rook_b = null;
+	private Image rook_w = null;
+	public Rook(boolean isWhite, Location loc)
 	{
 		super(isWhite, loc);
+		
+		hasMoved=false;
 	}
+	
 	public void draw(Graphics g)
 	{
 		final int x = 20;
 		final int y = 40;
 		final int width = 40;
 		try {
-			bishop_b = ImageIO.read(new File("C:\\workspace\\chess\\src\\client\\gui\\bishop_black.PNG"));
-			bishop_w = ImageIO.read(new File("C:\\workspace\\chess\\src\\client\\gui\\bishop_white.png"));
+			rook_b = ImageIO.read(new File("image\\rook_black.png"));
+			rook_w = ImageIO.read(new File("image\\rook_white.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
@@ -49,7 +52,7 @@ public class Bishop extends ChessPiece
 			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
 			g.fillRect(10, 10, width, width);
 			g.setColor(Color.BLACK);*/
-			g.drawImage(bishop_b, 3, 3,80,80, null);
+			g.drawImage(rook_b, 3, 3,80,80, null);
 		}
 		else
 		{
@@ -57,10 +60,21 @@ public class Bishop extends ChessPiece
 			g.setFont(new Font("Courier", g.getFont().getStyle(), width));
 			g.fillRect(10, 10, width, width);
 			g.setColor(Color.WHITE);*/
-			g.drawImage(bishop_w, 3, 3,80,80, null);
+			g.drawImage(rook_w, 3, 3,80,80, null);
 		}
-		//g.drawString("B", x, y);
+		//g.drawString("R", x, y);
 	}
+	
+	public boolean getHasMoved()
+	{
+		return hasMoved;
+	}
+	
+	public void setHasMoved(boolean input)
+	{
+		hasMoved=input;
+	}
+	
 	public ArrayList<Location> getMoves(BoardState board)
 	{
 		ArrayList<Location> possibleMoves = new ArrayList<Location>();
@@ -74,13 +88,13 @@ public class Bishop extends ChessPiece
 		for(int z=1; z<=32; z++)
 		{
 			if(z<=8)
-				locs[z-1] = new Location(y-z%8, x-z%8);
+				locs[z-1] = new Location(y-z%8, x);
 			else if(z<=16)
-				locs[z-1] = new Location(y-z%8, x+z%8);
+				locs[z-1] = new Location(y, x+z%8);
 			else if(z<=24)
-				locs[z-1] = new Location(y+z%8, x+z%8);
+				locs[z-1] = new Location(y+z%8, x);
 			else
-				locs[z-1] = new Location(y+z%8, x-z%8);
+				locs[z-1] = new Location(y, x-z%8);
 		}
 
 		if(getColor())
@@ -113,10 +127,11 @@ public class Bishop extends ChessPiece
 	public void moveTo(Location moveLoc)
 	{
 		setLocation(moveLoc);
+		hasMoved=true;
 	}
 	
 	public String toString()
 	{
-		return super.toString()+" Bishop";
+		return super.toString()+" Rook";
 	}
 }

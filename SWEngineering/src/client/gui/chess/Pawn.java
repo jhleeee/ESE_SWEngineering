@@ -1,4 +1,4 @@
-package client.gui;
+package client.gui.chess;
 /*
 G Chess version 1.0
 Copyright (c) 2010 Gary Menezes
@@ -42,8 +42,8 @@ public class Pawn extends ChessPiece
 		p.addPoint(5,50);
 		p.addPoint(55,50);
 		try {
-			img_b = ImageIO.read(new File("C:\\workspace\\chess\\src\\client\\gui\\pawn_black.png"));
-			img_w = ImageIO.read(new File("C:\\workspace\\chess\\src\\client\\gui\\pawn_white.png"));
+			img_b = ImageIO.read(new File("image\\pawn_black.png"));
+			img_w = ImageIO.read(new File("image\\pawn_white.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 

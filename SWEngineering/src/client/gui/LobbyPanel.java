@@ -117,12 +117,10 @@ public class LobbyPanel extends JPanel implements PanelInterface
         }
     }
     
-    @Override
     public void removeUser(String id) {
         userList.removeElement( id );
     }
     
-    @Override
     public void addUser( String id ) {
         userList.addElement( id );
     }
@@ -139,7 +137,6 @@ public class LobbyPanel extends JPanel implements PanelInterface
         msg_textPane.setEditable(false);
     }
 
-    @Override
     public void addUserList( Vector<String> list ) {
         for( String id : list ) {
             addUser( id );

@@ -1,4 +1,4 @@
-package client.gui;
+package client.gui.chess;
 /*
 G Chess version 1.0
 Copyright (c) 2010 Gary Menezes
@@ -44,8 +44,8 @@ public class King extends ChessPiece
 		final int y = 40;
 		final int width = 40;
 		try {
-			king_b = ImageIO.read(new File("C:\\workspace\\chess\\src\\client\\gui\\king_black.png"));
-			king_w = ImageIO.read(new File("C:\\workspace\\chess\\src\\client\\gui\\king_white.png"));
+			king_b = ImageIO.read(new File("image\\king_black.png"));
+			king_w = ImageIO.read(new File("image\\king_white.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 

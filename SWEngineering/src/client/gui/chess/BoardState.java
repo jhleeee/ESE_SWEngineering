@@ -1,4 +1,4 @@
-package client.gui;
+package client.gui.chess;
 /*
 G Chess version 1.0
 Copyright (c) 2010 Gary Menezes

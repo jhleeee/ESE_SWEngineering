@@ -130,7 +130,7 @@ class ClientReceiver extends Thread
             // 이름이 있으면 방이 생성 된 것
             else {
                 // 방 패널로 바꾸고
-                frame.setPanel( PanelInterface.TestRoomPanel );
+                frame.setPanel( PanelInterface.RoomPanel );
                 //frame.setRoomTitle();
                 sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM ) );
             }
@@ -141,7 +141,7 @@ class ClientReceiver extends Thread
             break;
             
         case LobbyProtocol.ENTER_ROOM:
-            frame.setPanel( PanelInterface.TestRoomPanel );
+            frame.setPanel( PanelInterface.RoomPanel );
             //frame.setRoomTitle();
             sender.send( new RoomProtocol( RoomProtocol.ENTER_ROOM ) );
             break;
