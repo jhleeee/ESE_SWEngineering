@@ -35,39 +35,40 @@ public class TestRoomPanel extends JPanel implements PanelInterface
     public ChessBoard board;
     
     Dimension boardSize = new Dimension(640,640);
-    
+    Dimension toolBarSize = new Dimension(270,360);//ï¿½ï¿½É¹ï¿½Æ° ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /**
      * Create the panel.
      */
     public TestRoomPanel( final Sender sender, final MainFrame frame ) {
-    	
-    	
-    	
         setLayout(null);
         
+        ToolBar toolBar = new ToolBar(gui, toolBarSize);
+        toolBar.setBounds(700, 30, 270, 350);
+		add(toolBar);
+		
         board = new ChessBoard(board_state, gui, boardSize);
 		updateBoard(board_state);	
 		board.setBounds(30, 30, 640, 640);
 		board.setBackground(Color.BLUE);
 		add(board);
         
-        JPanel chat_panel = new JPanel();//Ã¤ÆÃÆÇ³Ú
+        JPanel chat_panel = new JPanel();//Ã¤ï¿½ï¿½ï¿½Ç³ï¿½
         chat_panel.setBounds(700, 490, 737, 200);
         chat_panel.setBackground(Color.LIGHT_GRAY);
         add(chat_panel);
         chat_panel.setLayout(null);
         
-        JScrollPane scrollPane = new JScrollPane();//Ã¤ÆÃ½ºÅ©·Ñ ÆÇ³Ú
+        JScrollPane scrollPane = new JScrollPane();//Ã¤ï¿½Ã½ï¿½Å©ï¿½ï¿½ ï¿½Ç³ï¿½
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setBounds(12, 10, 270, 149);
         chat_panel.add(scrollPane);
         
-        msg_textPane = new JTextPane();//Ã¤ÆÃÅØ½ºÆ®¸¸³Ú
+        msg_textPane = new JTextPane();//Ã¤ï¿½ï¿½ï¿½Ø½ï¿½Æ®ï¿½ï¿½ï¿½ï¿½
         msg_textPane.setEditable(false);
         //msg_textPane.setLineWrap( true );
         scrollPane.setViewportView( msg_textPane );
         
-        msg_textField = new JTextField();//¸Þ¼¼ÁöÀÔ·Â ÆÇ³Ú
+        msg_textField = new JTextField();//ï¿½Þ¼ï¿½ï¿½ï¿½ï¿½Ô·ï¿½ ï¿½Ç³ï¿½
         msg_textField.setBounds(164, 169, 562, 21);
         chat_panel.add(msg_textField);
         msg_textField.setColumns(10);
@@ -76,11 +77,11 @@ public class TestRoomPanel extends JPanel implements PanelInterface
             @Override
             public void actionPerformed(ActionEvent e) {
                 String whisper_id = whisper_textField.getText();
-                // ±Ó¸»ÀÌ ¾Æ´Ï¸é
+                // ï¿½Ó¸ï¿½ï¿½ï¿½ ï¿½Æ´Ï¸ï¿½
                 if( whisper_id.isEmpty() ) {
                     sender.send( new ChatProtocol( ChatProtocol.MESSAGE, msg_textField.getText() ) );    
                 }
-                // ±Ó¸»ÀÌ¸é
+                // ï¿½Ó¸ï¿½ï¿½Ì¸ï¿½
                 else {
                     sender.send( new ChatProtocol( ChatProtocol.WHISPER, msg_textField.getText(), whisper_id ) );
                 }
@@ -88,7 +89,7 @@ public class TestRoomPanel extends JPanel implements PanelInterface
             }
         });
         
-        whisper_textField = new JTextField();//±Ó¼Ó¸» ÆÇ³Ú
+        whisper_textField = new JTextField();//ï¿½Ó¼Ó¸ï¿½ ï¿½Ç³ï¿½
         whisper_textField.setBounds(12, 169, 140, 21);
         chat_panel.add(whisper_textField);
         whisper_textField.setColumns(10);
@@ -134,7 +135,7 @@ public class TestRoomPanel extends JPanel implements PanelInterface
         msg_textPane.setText("");
     }
     
-    ////////////////////////////////////////Ã¼½º
+    ////////////////////////////////////////Ã¼ï¿½ï¿½
     public void updateBoard(BoardState boardState)
 	{
 		board.updateBoard(boardState);
