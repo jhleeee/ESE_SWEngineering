@@ -1,4 +1,4 @@
-package test;
+package client.gui;
 import java.sql.Connection;
 import java.sql.DriverManager; 
 import com.mysql.jdbc.Statement;

@@ -1,6 +1,8 @@
 package client.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Vector;
@@ -27,29 +29,45 @@ public class TestRoomPanel extends JPanel implements PanelInterface
     private JTextPane msg_textPane;
     private JTextField whisper_textField;
     private JButton button;
+    public BoardState board_state = new BoardState();
+    public GUIRunner runner = new GUIRunner();
+    public GUI gui = new GUI(board_state,runner);
+    public ChessBoard board;
+    
+    Dimension boardSize = new Dimension(640,640);
     
     /**
      * Create the panel.
      */
     public TestRoomPanel( final Sender sender, final MainFrame frame ) {
+    	
+    	
+    	
         setLayout(null);
-        JPanel chat_panel = new JPanel();
-        chat_panel.setBounds(250, 490, 737, 200);
+        
+        board = new ChessBoard(board_state, gui, boardSize);
+		updateBoard(board_state);	
+		board.setBounds(30, 30, 640, 640);
+		board.setBackground(Color.BLUE);
+		add(board);
+        
+        JPanel chat_panel = new JPanel();//채팅판넬
+        chat_panel.setBounds(700, 490, 737, 200);
         chat_panel.setBackground(Color.LIGHT_GRAY);
         add(chat_panel);
         chat_panel.setLayout(null);
         
-        JScrollPane scrollPane = new JScrollPane();
+        JScrollPane scrollPane = new JScrollPane();//채팅스크롤 판넬
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPane.setBounds(12, 10, 713, 149);
+        scrollPane.setBounds(12, 10, 270, 149);
         chat_panel.add(scrollPane);
         
-        msg_textPane = new JTextPane();
+        msg_textPane = new JTextPane();//채팅텍스트만넬
         msg_textPane.setEditable(false);
         //msg_textPane.setLineWrap( true );
         scrollPane.setViewportView( msg_textPane );
         
-        msg_textField = new JTextField();
+        msg_textField = new JTextField();//메세지입력 판넬
         msg_textField.setBounds(164, 169, 562, 21);
         chat_panel.add(msg_textField);
         msg_textField.setColumns(10);
@@ -70,7 +88,7 @@ public class TestRoomPanel extends JPanel implements PanelInterface
             }
         });
         
-        whisper_textField = new JTextField();
+        whisper_textField = new JTextField();//귓속말 판넬
         whisper_textField.setBounds(12, 169, 140, 21);
         chat_panel.add(whisper_textField);
         whisper_textField.setColumns(10);
@@ -82,7 +100,7 @@ public class TestRoomPanel extends JPanel implements PanelInterface
                 sender.send( new RoomProtocol( RoomProtocol.EXIT_ROOM ) );
             }
         });
-        button.setBounds(254, 435, 97, 23);
+        button.setBounds(700, 435, 97, 23);
         add(button);
     }
 
@@ -115,5 +133,11 @@ public class TestRoomPanel extends JPanel implements PanelInterface
     public void clear() {
         msg_textPane.setText("");
     }
+    
+    ////////////////////////////////////////체스
+    public void updateBoard(BoardState boardState)
+	{
+		board.updateBoard(boardState);
+	}
 
 }

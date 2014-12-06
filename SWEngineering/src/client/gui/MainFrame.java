@@ -15,6 +15,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Iterator;
 import java.util.Vector;
+import java.util.concurrent.Delayed;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -89,7 +90,8 @@ public class MainFrame extends JFrame
         
         lobbyPanel = new LobbyPanel( sender );
         testRoomPanel = new TestRoomPanel( sender, this );
-        setPanel( PanelInterface.LobbyPanel );
+        //setPanel( PanelInterface.LobbyPanel );
+        setPanel(PanelInterface.LobbyPanel);
     }
 
     public void clear() {
