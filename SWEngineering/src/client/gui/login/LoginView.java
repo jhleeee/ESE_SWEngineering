@@ -1,4 +1,4 @@
-package client.gui.login;
+package client.gui;
 
 import java.awt.*;
 import java.awt.event.*; 
@@ -13,8 +13,8 @@ public class LoginView extends Frame implements ActionListener, Runnable
 	 JPasswordField in_PW; //비밀번호
 	 JButton login; //로그인 버튼
 	 ImageIcon im;
-	 String win = "0";
-	 String lose = "0";
+	 Integer win = 0;
+	 Integer lose = 0;
  
 	 public LoginView(String str) 
 	 {
