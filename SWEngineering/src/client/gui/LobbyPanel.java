@@ -1,6 +1,7 @@
 package client.gui;
 
 import javax.swing.DefaultListCellRenderer;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JPanel;
 import javax.swing.JInternalFrame;
@@ -72,6 +73,9 @@ public class LobbyPanel extends JPanel implements PanelInterface
     private CardLayout cardLayout;
     
     private Sender sender = null;
+    private JLabel win_label;
+    private JLabel lose_label;
+    private JLabel rate_label;
     
     void setRoomStateToFull( int idx ) {
         RoomCard.setButtonToFull( idx );
@@ -88,7 +92,17 @@ public class LobbyPanel extends JPanel implements PanelInterface
     void deleteRoom( int idx ) {
         RoomCard.setButtonToEmpty( idx );
     }
+
     
+    void setWinLabel( String val ) {
+        win_label.setText( val );;
+    }
+    void setLoseLabel( String val ) {
+        lose_label.setText( val );;
+    }
+    void setRateLabel( String val ) {
+        rate_label.setText( val );;
+    }
     void addRoomCard() {
         RoomCard roomCard = new RoomCard( sender );
         roomCard.setBackground(new Color(153, 204, 204));
@@ -333,7 +347,6 @@ public class LobbyPanel extends JPanel implements PanelInterface
                            // sender 로 유저정보 요청
                            sender.send( new LobbyProtocol( LobbyProtocol.REQUEST_USER_INFO, userList_list.getSelectedValue() ) );
                            
-                           
                        }
                     });
                     timer.setRepeats(false);
@@ -342,7 +355,6 @@ public class LobbyPanel extends JPanel implements PanelInterface
                 else {
                     timer.restart();
                     // 내정보
-                    sender.send( new LobbyProtocol( LobbyProtocol.REQUEST_USER_INFO, userList_list.getSelectedValue() ) );
                 }
             }
         });

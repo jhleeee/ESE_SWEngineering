@@ -17,6 +17,7 @@ public class LobbyProtocol implements Protocol
     public final static int ROOM_STATE_FULL = 11000;
     public final static int ROOM_STATE_IN_GAME = 12000;
     public final static int ROOM_STATE_WAITING = 13000;
+	public final static int REQUEST_USER_INFO = 14000;
     
     private int protocol = 0;
     private Object data = null;

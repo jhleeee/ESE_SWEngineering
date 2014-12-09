@@ -2,8 +2,10 @@ package server;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.SocketException;
+import java.sql.*;
 
 import client.gui.LobbyPanel;
 import protocol.ChatProtocol;
@@ -12,6 +14,7 @@ import protocol.LobbyProtocol;
 import protocol.Protocol;
 import protocol.RoomProtocol;
 import common.Sender;
+import common.UserInfo;
 import common.Util;
 
 
@@ -166,7 +169,47 @@ class ServerReceiver extends Thread
             server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
             server.removeUser( id );
             break;
-            
+        
+        case LobbyProtocol.REQUEST_USER_INFO:
+        {
+        	String sid = (String)p.getData();
+        	Statement stmt = null;
+        	String win = null;
+        	String lose = null;
+        	try
+        	{
+        		Class.forName("com.mysql.jdbc.Driver");
+        		Connection conn =  DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/member", "root", "1234");
+        		stmt = conn.createStatement();
+        		ResultSet rs = stmt.executeQuery("select win,lose from guest where id in ('ljy03')");
+        		while(rs.next())
+        		{
+        			try {
+						win = new String(rs.getString("win").getBytes("ISO-8859-1"));
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        			try {
+						lose = new String(rs.getString("lose").getBytes("ISO-8859-1"));
+					} catch (UnsupportedEncodingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+        			sender.send( new LobbyProtocol( LobbyProtocol.REQUEST_USER_INFO, new UserInfo( win, lose ) ) );
+        		}  		
+        	}
+        	catch (ClassNotFoundException e)
+        	{
+        		e.printStackTrace();
+        	} 
+        	catch(SQLException e)
+        	{
+        		e.printStackTrace();
+        	}
+        	
+        	break;
+        }
         case LobbyProtocol.CREATE_ROOM:
         {
             Room room = new Room( (String)p.getName(), (Integer)p.getData() );
@@ -185,7 +228,7 @@ class ServerReceiver extends Thread
             ((Room)server).setOwner( id );
             break;
         }
-            
+        
         case LobbyProtocol.ENTER_ROOM:
             Room room = lobby.getRoom( (Integer)p.getData() );
             if( room != null ) {

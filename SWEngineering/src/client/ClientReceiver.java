@@ -16,6 +16,7 @@ import client.gui.PanelInterface;
 import protocol.*;
 import common.RoomInfo;
 import common.Sender;
+import common.UserInfo;
 
 class ClientReceiver extends Thread
 {
@@ -23,6 +24,8 @@ class ClientReceiver extends Thread
     private ObjectInputStream in = null;
     
     private String id = null;
+    private String win = null;
+    private String lose = null;
     
     MainFrame frame = null;
     // 변수 필요하면 생성
@@ -141,6 +144,12 @@ class ClientReceiver extends Thread
             frame.messagePopup( null, "방을 생성 할 수 없습니다" );
             break;
             
+        case LobbyProtocol.REQUEST_USER_INFO:
+            UserInfo info = (UserInfo) p.getData();
+            frame.setWinLabel( info.getWin() );
+            frame.setLoseLabel( info.getLose());
+            frame.setRateLabel( info.getRate());
+        	
         case LobbyProtocol.ENTER_ROOM:
             frame.setPanel( PanelInterface.RoomPanel );
             //frame.setRoomTitle();
