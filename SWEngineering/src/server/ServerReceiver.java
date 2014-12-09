@@ -1,21 +1,25 @@
 package server;
 
 import java.io.IOException;
+
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.Socket;
 import java.net.SocketException;
-import java.sql.*;
 
 import client.gui.LobbyPanel;
+import client.gui.chess.BoardState;
 import protocol.ChatProtocol;
 import protocol.GameProtocol;
 import protocol.LobbyProtocol;
 import protocol.Protocol;
 import protocol.RoomProtocol;
 import common.Sender;
-import common.UserInfo;
 import common.Util;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.sql.*;
+import common.UserInfo;
 
 
 class ServerReceiver extends Thread
@@ -30,6 +34,7 @@ class ServerReceiver extends Thread
     
     private int userLocation = 0;
     private boolean isOwner = false;
+    private boolean isReallyWhiteTurn= false;
     
     ServerReceiver( Socket socket, Lobby lobby ) throws IOException{
         sender = new Sender( socket );
@@ -57,7 +62,11 @@ class ServerReceiver extends Thread
         return id;
     }
     
-    public void run() {
+    public void setSender(Sender sender) {
+		this.sender = sender;
+	}
+
+	public void run() {
         Protocol p = null;
         try {
             // 테스트
@@ -155,6 +164,47 @@ class ServerReceiver extends Thread
             server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
             server.removeUser( id );
             break;
+            
+        case LobbyProtocol.REQUEST_USER_INFO:
+	        {
+	        	String sid = (String)p.getData();
+	        	Statement stmt = null;
+	        	String win = null;
+	        	String lose = null;
+	        	try
+	        	{
+	        		Class.forName("com.mysql.jdbc.Driver");
+	        		Connection conn =  DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/member", "root", "1234");
+	        		stmt = conn.createStatement();
+	        		ResultSet rs = stmt.executeQuery("select win,lose from guest where id in ('ljy03')");
+	        		while(rs.next())
+	        		{
+	        			try {
+							win = new String(rs.getString("win").getBytes("ISO-8859-1"));
+						} catch (UnsupportedEncodingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	        			try {
+							lose = new String(rs.getString("lose").getBytes("ISO-8859-1"));
+						} catch (UnsupportedEncodingException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	        			sender.send( new LobbyProtocol( LobbyProtocol.REQUEST_USER_INFO, new UserInfo( win, lose ) ) );
+	        		}  		
+	        	}
+	        	catch (ClassNotFoundException e)
+	        	{
+	        		e.printStackTrace();
+	        	} 
+	        	catch(SQLException e)
+	        	{
+	        		e.printStackTrace();
+	        	}
+	        	
+	        	break;
+	        }
         }
     }
     
@@ -169,47 +219,7 @@ class ServerReceiver extends Thread
             server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
             server.removeUser( id );
             break;
-        
-        case LobbyProtocol.REQUEST_USER_INFO:
-        {
-        	String sid = (String)p.getData();
-        	Statement stmt = null;
-        	String win = null;
-        	String lose = null;
-        	try
-        	{
-        		Class.forName("com.mysql.jdbc.Driver");
-        		Connection conn =  DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/member", "root", "1234");
-        		stmt = conn.createStatement();
-        		ResultSet rs = stmt.executeQuery("select win,lose from guest where id in ('ljy03')");
-        		while(rs.next())
-        		{
-        			try {
-						win = new String(rs.getString("win").getBytes("ISO-8859-1"));
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        			try {
-						lose = new String(rs.getString("lose").getBytes("ISO-8859-1"));
-					} catch (UnsupportedEncodingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-        			sender.send( new LobbyProtocol( LobbyProtocol.REQUEST_USER_INFO, new UserInfo( win, lose ) ) );
-        		}  		
-        	}
-        	catch (ClassNotFoundException e)
-        	{
-        		e.printStackTrace();
-        	} 
-        	catch(SQLException e)
-        	{
-        		e.printStackTrace();
-        	}
-        	
-        	break;
-        }
+            
         case LobbyProtocol.CREATE_ROOM:
         {
             Room room = new Room( (String)p.getName(), (Integer)p.getData() );
@@ -219,6 +229,7 @@ class ServerReceiver extends Thread
             }
             userLocation = (Integer)p.getData();
             isOwner = true;
+            isReallyWhiteTurn = true;
             server = room;
             sender.send( p );
             server.addUser( lobby.removeUser( id ) );
@@ -226,9 +237,10 @@ class ServerReceiver extends Thread
             lobby.broadcast( p );
             lobby.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
             ((Room)server).setOwner( id );
+            ((Room)server).setOwnerSender(sender);
             break;
         }
-        
+            
         case LobbyProtocol.ENTER_ROOM:
             Room room = lobby.getRoom( (Integer)p.getData() );
             if( room != null ) {
@@ -238,6 +250,7 @@ class ServerReceiver extends Thread
                     server.broadcast( new LobbyProtocol( LobbyProtocol.EXIT_LOBBY, id ) );
                     server = room;
                     server.addUser( lobby.removeUser( id ) );
+                    ((Room)server).setGuestSender(sender);
                     sender.send( p );
                 }
                 else {
@@ -261,6 +274,34 @@ class ServerReceiver extends Thread
             break;
             
         case RoomProtocol.READY:
+        	if(((Room)server).isInGame() == false){
+        		
+        		if( ((Room)server).getSize() < 2) {
+            		sender.send( new ChatProtocol( ChatProtocol.NOTICE, "도전자를 기다리는 중 입니다.\n" ) );
+	            }else{
+	            	if(isOwner){
+	            		
+	            		if(((Room)server).isReady() == false){
+	            			server.broadcast( new ChatProtocol( ChatProtocol.NOTICE, "도전자가 준비되지 않았습니다.\n" ) );
+	            		}else{
+	            			((Room)server).setisInGame(true);
+	            			server.broadcast( new ChatProtocol( ChatProtocol.NOTICE, "게임시작!\n" ) );
+	            			server.broadcast(new GameProtocol(GameProtocol.GAME_START));
+	            		}
+	            		
+	            	}else{
+	            		
+	            		if(((Room)server).isReady() == false){
+	            			((Room)server).setReady(true);
+	                		server.broadcast( new ChatProtocol( ChatProtocol.NOTICE, "도전자가 준비되었습니다!\n" ) );
+	            		}else{
+	            			
+	            		}
+	            	}
+	            }
+        	}else{
+        		sender.send( new ChatProtocol( ChatProtocol.SYSTEM, "[SYSTEM] 게임중입니다.\n" ) );
+        	}
             
             break;
             
@@ -293,7 +334,10 @@ class ServerReceiver extends Thread
                 if( isOwner ) {
                     ((Room)server).getReceivers().next().getSender().send( new RoomProtocol( RoomProtocol.OWNER ) );
                     isOwner = false;
+                    isReallyWhiteTurn = false;
                 }
+                ((Room)server).setisInGame(false);
+                ((Room)server).setReady(false);
                 server = lobby;
                 server.broadcast( new LobbyProtocol( LobbyProtocol.ROOM_STATE_WAITING, roomNum ) );
             }
@@ -329,6 +373,7 @@ class ServerReceiver extends Thread
             
         case RoomProtocol.OWNER:
             isOwner = true;
+            isReallyWhiteTurn = true;
             ((Room)server).setOwner( id );
             break;
         }
@@ -341,10 +386,59 @@ class ServerReceiver extends Thread
         //System.out.println( "get Game Protocol" );
         switch( p.getProtocol() ) {
         
-        case GameProtocol.PROTOCOL:
-            // do something
+        case GameProtocol.GAME_MOVE:
+        	if(((Room)server).isInGame() == true){
+	        	if(p.isbooleanValue() == isReallyWhiteTurn){
+	           server.broadcast(new GameProtocol(GameProtocol.GAME_MOVE, p.getData()));
+	        	}
+	        	else{
+	        		sender.send( new ChatProtocol( ChatProtocol.NOTICE, "지금은 상대방 턴입니다!\n" ) );
+	        	}
+        	}
+           break;
+        case GameProtocol.GAME_GIVE_UP:
+        	if(((Room)server).isInGame() == true){
+        		
+        		((Room)server).setisInGame(false);
+    	    	((Room)server).setReady(false);
+    	    	
+    	    	if(isOwner){
+    	    		sender.send(new GameProtocol(GameProtocol.GAME_LOSE));
+    	    		((Room)server).getGuestSender().send(new GameProtocol(GameProtocol.GAME_WIN));
+    	    	}else{
+    	    		sender.send(new GameProtocol(GameProtocol.GAME_LOSE));
+    	    		((Room)server).getOwnerSender().send(new GameProtocol(GameProtocol.GAME_WIN));
+    	    	}
+    	    	
+    	    	server.broadcast(new GameProtocol(GameProtocol.GAME_QUIT));
+    	    	
+        	}else
+        		sender.send( new ChatProtocol( ChatProtocol.SYSTEM, "[SYSTEM] 게임 중이 아닙니다!\n" ) );
+	    	
+	    	break;
+        case GameProtocol.GAME_UNDO:
+        	if(((Room)server).isInGame() == true){
+
+        	    	if(isOwner){
+        	    		((Room)server).getGuestSender().send(new GameProtocol(GameProtocol.GAME_CONFIRM));
+        	    	}else{
+        	    		((Room)server).getOwnerSender().send(new GameProtocol(GameProtocol.GAME_CONFIRM));
+        	    	}
+        	    	
+        	}else
+        		sender.send( new ChatProtocol( ChatProtocol.SYSTEM, "[SYSTEM] 게임 중이 아닙니다!\n" ) );
+           break;
+        case GameProtocol.GAME_CONFIRM:
+        	if((boolean)p.getData() == false){
+        		server.broadcast( new ChatProtocol( 
+                        ChatProtocol.NOTICE, "무르기가 거절되었습니다.\n" ));
+        	}else{
+        		server.broadcast( new ChatProtocol( 
+                        ChatProtocol.NOTICE, "무르기가 수락되었습니다.\n" ));
+        		server.broadcast(new GameProtocol(GameProtocol.GAME_UNDO));
+        	}
         }
     }
     
-
+    
 }

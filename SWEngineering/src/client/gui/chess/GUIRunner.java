@@ -17,6 +17,7 @@ import java.awt.Desktop;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import common.Sender;
 
 import javax.swing.JPanel;
 
@@ -34,10 +35,10 @@ public class GUIRunner implements Serializable
 	private ArrayList<Integer> wasPieceTaken;
 	private ArrayList<Location> moves;
 	
-	public GUIRunner(JPanel board_panel)
+	public GUIRunner(JPanel board_panel,final Sender sender)
 	{
 		board = new BoardState();
-		gui = new GUI(board, this, board_panel);
+		gui = new GUI(board, this, board_panel, sender);
 		highlight = true; //하이라이트 옵션 true 초기화
 		perpetualFlip=false;
 		moves = new ArrayList<Location>();
@@ -67,7 +68,7 @@ public class GUIRunner implements Serializable
 	{
 		return isWhiteTurn;
 	}
-	
+
 	public ArrayList<Location> getMoves(Location piece)
 	{
 		ArrayList<Location> allMoves = board.getState()[piece.getRow()][piece.getCol()].getMoves(board);
@@ -298,6 +299,7 @@ public class GUIRunner implements Serializable
 		else
 			for(Location z : moves)
 				gui.enable(z, highlight);
+				
 	}
 	
 	public void processOne(Location loc)
@@ -310,7 +312,9 @@ public class GUIRunner implements Serializable
 				selectedPiece = loc;
 				gui.resetBackground();
 				gui.resetBorders();
+				
 				gui.selected(selectedPiece);
+				
 				processMoves();
 			}
 			else
@@ -374,7 +378,7 @@ public class GUIRunner implements Serializable
 	        {
 	            e.printStackTrace();
 	        }
-			gui.dispose();
+			//gui.ddispose();
 		}
 		else if(command==-13)
 		{
@@ -403,24 +407,7 @@ public class GUIRunner implements Serializable
 		}
 		else if(command==-21)
 		{
-//			gui.repaint();
-			if(undoMoves.size() > 0)
-			{
-				board.undoMove(undoMoves.get(undoMoves.size()-1));
-				undoMoves.remove(undoMoves.size()-1);
-				isWhiteTurn = !isWhiteTurn;
-				board.setTurn(isWhiteTurn);
-				selectedPiece=null;
-				gui.updateBoard(board);
-				gui.enableSide(isWhiteTurn);
-				wasPieceTaken.remove(wasPieceTaken.size()-1);
-				//gui.backPGN();
-				if(perpetualFlip)
-					gui.flipBoard();
-//				sounds.undo();
-			}
-			else
-				gui.updateStatusBar("You can't undo any more moves!", true);
+//			
 		}
 		else if(command==-22)
 		{
@@ -431,5 +418,34 @@ public class GUIRunner implements Serializable
 				processMoves();
 			gui.updateStatusBar("Highlighting of possible moves toggled!", true);
 		}
+	}
+	
+	public void undoProcess(){
+		gui.repaint();
+		if(undoMoves.size() > 0)
+		{
+			board.undoMove(undoMoves.get(undoMoves.size()-1));
+			undoMoves.remove(undoMoves.size()-1);
+			isWhiteTurn = !isWhiteTurn;
+			board.setTurn(isWhiteTurn);
+			selectedPiece=null;
+			gui.updateBoard(board);
+			gui.enableSide(isWhiteTurn);
+			wasPieceTaken.remove(wasPieceTaken.size()-1);
+			//gui.backPGN();
+			if(perpetualFlip)
+				gui.flipBoard();
+//			sounds.undo();
+		}
+		else
+			gui.updateStatusBar("You can't undo any more moves!", true);
+	}
+
+	public GUI getGui() {
+		return gui;
+	}
+
+	public BoardState getBoard() {
+		return board;
 	}
 }

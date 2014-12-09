@@ -9,11 +9,16 @@ import java.util.Scanner;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.text.html.HTMLDocument.RunElement;
 
 import client.gui.LobbyPanel;
 import client.gui.MainFrame;
 import client.gui.PanelInterface;
+import client.gui.chess.BoardState;
+import client.gui.chess.GUIRunner;
 import protocol.*;
+import server.Room;
 import common.RoomInfo;
 import common.Sender;
 import common.UserInfo;
@@ -148,8 +153,8 @@ class ClientReceiver extends Thread
             UserInfo info = (UserInfo) p.getData();
             frame.setWinLabel( info.getWin() );
             frame.setLoseLabel( info.getLose());
-            frame.setRateLabel( info.getRate());
-        	
+            frame.setRateLabel( info.getRate());  
+            
         case LobbyProtocol.ENTER_ROOM:
             frame.setPanel( PanelInterface.RoomPanel );
             //frame.setRoomTitle();
@@ -244,17 +249,47 @@ class ClientReceiver extends Thread
             frame.addUser( (String)p.getData() );
             break;
         }
-        
-       
-        
-        
     }
     
     private void handleProtocol( GameProtocol p ) {
         //System.out.println( "get Game Protocol" );
         // 클라이언트 동작
         // 게임 중 필요 한 프로토콜 동작
-        
+    	 GUIRunner run = frame.getRoomPanel().getRun();
+    	 BoardState board = run.getBoard();
+    	 
+    	switch( p.getProtocol() ) {
+    	 case GameProtocol.GAME_START:
+    		run.setVisible();
+    		break;
+    	 case GameProtocol.GAME_READY:
+    		 break;
+    	 case GameProtocol.GAME_MOVE:
+    		run.getGui().afterActionPerformed((int)p.getData());
+    		 break;
+    	 case GameProtocol.GAME_GIVE_UP:
+    		 break;
+    	 case GameProtocol.GAME_WIN:
+    		 frame.messagePopup( null, "승리하였습니다!" );
+    		 break;
+    	 case GameProtocol.GAME_LOSE:
+    		 frame.messagePopup( null, "패배하였습니다!" );
+    		 break;
+    	 case GameProtocol.GAME_QUIT:
+    		 board.resetBoardState();
+    		 run.getGui().updateBoard(board);
+    		 run.getGui().setEnabled(false);
+    		 
+    		 break;
+    	 case GameProtocol.GAME_CONFIRM:
+    		 boolean yesNo = frame.confirmPopup("무르기", "상대방이 무르기를 요청하였습니다.\n승낙하시겠습니까?\n");
+    			 sender.send(new GameProtocol(GameProtocol.GAME_CONFIRM, yesNo));
+    		 
+    		 break;
+    	 case GameProtocol.GAME_UNDO:
+    		 	run.undoProcess();
+    		 break;
+    	}
         
     }
 }

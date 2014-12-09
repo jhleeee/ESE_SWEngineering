@@ -23,7 +23,7 @@ public class PopupWindow extends JDialog
 	private GUI parent;
 	public PopupWindow(GUI parent, String title)
 	{
-		super(parent,title);
+		//super(parent,title);
 		this.parent = parent;
 		setSize(300,100);
 		if(parent.isVisible())

@@ -37,7 +37,7 @@ public class MainFrame extends JFrame
     
     private LobbyPanel lobbyPanel;
     private RoomPanel roomPanel;
-    private PanelInterface panel;
+	private PanelInterface panel;
 
     /**
      * Create the frame.
@@ -90,9 +90,8 @@ public class MainFrame extends JFrame
         lobbyPanel = new LobbyPanel( sender );
         roomPanel = new RoomPanel( sender, this );
         setPanel( PanelInterface.LobbyPanel );
-        
     }
-    
+
     public void clear() {
         roomPanel.clear();
         lobbyPanel.clear();
@@ -105,6 +104,7 @@ public class MainFrame extends JFrame
     public void deleteRoom( int idx ) {
         lobbyPanel.deleteRoom( idx );
     }
+    
     public void setWinLabel( String val ) {
         lobbyPanel.setWinLabel( val );
     }
@@ -114,6 +114,7 @@ public class MainFrame extends JFrame
     public void setRateLabel( String val ) {
         lobbyPanel.setRateLabel( val );
     }
+    
     public void setButtonToStart() {
         roomPanel.setButtonToStart();
     }
@@ -205,4 +206,8 @@ public class MainFrame extends JFrame
     public void close() {
         dispatchEvent( new WindowEvent( this, WindowEvent.WINDOW_CLOSING ));
     }
+    
+    public RoomPanel getRoomPanel() {
+		return roomPanel;
+	}
 }

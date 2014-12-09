@@ -16,6 +16,7 @@ import javax.swing.ScrollPaneConstants;
 import common.Sender;
 import common.Util;
 import protocol.ChatProtocol;
+import protocol.GameProtocol;
 import protocol.RoomProtocol;
 
 import javax.swing.JButton;
@@ -43,9 +44,9 @@ public class RoomPanel extends JPanel implements PanelInterface
     
     private JLabel user1_label;
     private JLabel user2_label;
-    
+    private GUIRunner run;
     private int userNum = 0;
-    
+    public JPanel board_panel = null;
     @Override
     public void addUser(String id) {
         if( userNum == 0 ) {
@@ -127,10 +128,13 @@ public class RoomPanel extends JPanel implements PanelInterface
         start_ready_button.setText( "시작하기" );
     }
     
+    void startGame(GUIRunner run){
+    	run.setVisible();
+    }
     /**
      * Create the panel.
      */
-    public RoomPanel( final Sender sender, final MainFrame frame ) {
+    public RoomPanel(final Sender sender, final MainFrame frame ) {
         setBackground(new Color(153, 204, 204));
         setLayout(null);
         JPanel chat_panel = new JPanel();
@@ -205,6 +209,7 @@ public class RoomPanel extends JPanel implements PanelInterface
         start_ready_button = GuiUtil.createFlatButton("시작하기");
         start_ready_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	 sender.send( new RoomProtocol( RoomProtocol.READY) );
             }
         });
         start_ready_button.setBounds(673, 131, 97, 40);
@@ -213,6 +218,7 @@ public class RoomPanel extends JPanel implements PanelInterface
         undo_button = GuiUtil.createFlatButton("무르기");
         undo_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	sender.send( new GameProtocol( GameProtocol.GAME_UNDO) );
             }
         });
         undo_button.setBounds(782, 131, 97, 40);
@@ -221,6 +227,7 @@ public class RoomPanel extends JPanel implements PanelInterface
         giveup_button = GuiUtil.createFlatButton("기권하기");
         giveup_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+            	sender.send( new GameProtocol( GameProtocol.GAME_GIVE_UP) );
             }
         });
         giveup_button.setBounds(891, 131, 97, 40);
@@ -251,15 +258,18 @@ public class RoomPanel extends JPanel implements PanelInterface
         user2_label.setBounds(12, 67, 291, 25);
         user_panel.add(user2_label);
         
-        
-        JPanel board_panel = new JPanel();
+        board_panel = new JPanel();
         board_panel.setBounds(12, 10, 649, 680);
         add(board_panel);
         board_panel.setLayout(null);
-        
-        GUIRunner run = new GUIRunner(board_panel);
+        run = new GUIRunner(board_panel,sender);
         
 		//run.setVisible();
         
     }
+
+	public GUIRunner getRun() {
+		return run;
+	}
+
 }

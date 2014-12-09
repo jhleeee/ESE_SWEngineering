@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import common.Util;
 import protocol.Protocol;
+import common.Sender;
 
 public class Room implements ServerInterface
 {
@@ -18,6 +19,9 @@ public class Room implements ServerInterface
     private String owner = null;
     private int turnTime = 60;
     private boolean isInGame = false;
+    private boolean ready = false;
+    private Sender ownerSender = null;
+    private Sender guestSender = null;
     
     Room( String roomName, int roomNum ) {
         this.roomName = roomName;
@@ -28,7 +32,15 @@ public class Room implements ServerInterface
         Util.println( "Room\t\tcreate new Room : " + roomName );
     }
 
-    public String getOwner() {
+    public boolean isReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
+
+	public String getOwner() {
         return owner;
     }
     
@@ -97,4 +109,31 @@ public class Room implements ServerInterface
     public Vector<String> getUserList() {
         return userList.getIDs();
     }
+
+	public void setisInGame(boolean isInGame) {
+		this.isInGame = isInGame;
+	}
+    
+    public void clear(){
+    	this.isInGame = false;
+    	this.ready = false;
+    }
+
+	public Sender getOwnerSender() {
+		return ownerSender;
+	}
+
+	public void setOwnerSender(Sender ownerSender) {
+		this.ownerSender = ownerSender;
+	}
+
+	public Sender getGuestSender() {
+		return guestSender;
+	}
+
+	public void setGuestSender(Sender guestSender) {
+		this.guestSender = guestSender;
+	}
+
+    
 }

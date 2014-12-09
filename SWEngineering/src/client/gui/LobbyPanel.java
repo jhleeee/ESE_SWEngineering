@@ -92,7 +92,7 @@ public class LobbyPanel extends JPanel implements PanelInterface
     void deleteRoom( int idx ) {
         RoomCard.setButtonToEmpty( idx );
     }
-
+    
     
     void setWinLabel( String val ) {
         win_label.setText( val );;
@@ -345,8 +345,6 @@ public class LobbyPanel extends JPanel implements PanelInterface
                        public void actionPerformed(ActionEvent evt) {
                            userList_list.clearSelection();
                            // sender 로 유저정보 요청
-                           sender.send( new LobbyProtocol( LobbyProtocol.REQUEST_USER_INFO, userList_list.getSelectedValue() ) );
-                           
                        }
                     });
                     timer.setRepeats(false);
@@ -354,7 +352,6 @@ public class LobbyPanel extends JPanel implements PanelInterface
                 }
                 else {
                     timer.restart();
-                    // 내정보
                 }
             }
         });

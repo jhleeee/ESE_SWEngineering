@@ -15,9 +15,14 @@ Copyright Notice
 import java.awt.*;
 import java.awt.event.*;
 
+import common.Sender;
+
 import javax.swing.*;
 
-public class GUI extends JFrame implements ActionListener
+import protocol.GameProtocol;
+import protocol.RoomProtocol;
+
+public class GUI extends JPanel implements ActionListener
 {
 	private static final long serialVersionUID = -5825115473793035743L;
 
@@ -34,10 +39,14 @@ public class GUI extends JFrame implements ActionListener
 	private StatusBar statusBar;
 	
 	private PGNDisplay pgnPanel;
-		
-	public GUI(BoardState boardState, GUIRunner runner, JPanel board_panel)
+	
+	private int command = 0;
+	
+	private Sender sender = null;
+
+	public GUI(BoardState boardState, GUIRunner runner, JPanel board_panel, Sender sender)
 	{
-		super("G Chess");
+		super();
 		
 //		Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();//현재 해상도
 		Dimension boardSize = new Dimension(700,700);//보드사이즈
@@ -52,7 +61,7 @@ public class GUI extends JFrame implements ActionListener
 		
 		//"this" Main Frame***********************************************************
 		setLayout(new BorderLayout());//칸 나누는 레이아웃
-		setResizable(false);
+		//setResizable(false);
 		//****************************************************************************
 		
 		//South Panel*****************************************************************//하단부 제작
@@ -91,6 +100,7 @@ public class GUI extends JFrame implements ActionListener
 		updateBoard(boardState);	//보드 업데이트	
 		board.setBounds(0, 0, 649, 680);
 		board_panel.add(board);
+		setSender(sender);
 		//****************************************************************************
 
 		//Menu Bar********************************************************************
@@ -98,7 +108,7 @@ public class GUI extends JFrame implements ActionListener
 //		setJMenuBar(menuBar);
 		//****************************************************************************
 
-		pack();
+		//pack();
 //		setLocation(screen.width/2-getSize().width/2, screen.height/2-getSize().height/2);// 화면 중앙에 띄우기
 		repaint();
 //		setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
@@ -153,6 +163,7 @@ public class GUI extends JFrame implements ActionListener
 	public void newGame()
 	{
 		setEnabled(true);
+		//this.getChessBoard().setEnabled(false);
 		if(gameOver!=null)
 			gameOver.dispose();
 		//clearPGN();
@@ -239,7 +250,13 @@ public class GUI extends JFrame implements ActionListener
 	
 	public void actionPerformed(ActionEvent event)//버튼클릭시 작동
 	{
-		int command = Integer.parseInt(event.getActionCommand());//클릭한 버튼- 보드에서의 좌표값
+		
+		command = Integer.parseInt(event.getActionCommand());//클릭한 버튼- 보드에서의 좌표값
+		sender.send( new GameProtocol( GameProtocol.GAME_MOVE, command, runner.getTurn()) );
+	}
+	
+	public void afterActionPerformed(int command)
+	{
 		if(command >= 0)
 		{
 			//체스보드위의 클릭이벤트 처리
@@ -253,4 +270,22 @@ public class GUI extends JFrame implements ActionListener
 			//기능버튼들의 클릭 이벤트 처리
 			runner.processTwo(command);
 	}
+
+	public int getCommand() {
+		return command;
+	}
+
+	public void setCommand(int command) {
+		this.command = command;
+	}
+
+	public Sender getSender() {
+		return sender;
+	}
+
+	public void setSender(Sender sender) {
+		this.sender = sender;
+	}
+	
+	
 }
